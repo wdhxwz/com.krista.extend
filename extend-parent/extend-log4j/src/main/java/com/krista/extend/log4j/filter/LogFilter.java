@@ -1,5 +1,6 @@
 package com.krista.extend.log4j.filter;
 
+import com.krista.extend.utils.AppConfigUtil;
 import org.apache.log4j.PropertyConfigurator;
 import org.slf4j.MDC;
 import org.springframework.util.ResourceUtils;
@@ -24,11 +25,25 @@ public class LogFilter implements Filter {
         if (location != null) {
             ServletContext servletContext = filterConfig.getServletContext();
             servletContext.log("Initializing log4j from [" + this.getClass().getResource("/" + location).getPath() + "]");
-            String logRootPath = servletContext.getInitParameter("log.root.path");
+            String logRootPath = null;
+
+            try{
+                logRootPath = AppConfigUtil.getProperty("log.root.path");
+                servletContext.log("aaa = " + logRootPath);
+            }catch (Exception ex){
+                ex.printStackTrace();
+            }
+
+            if(logRootPath == null || logRootPath ==""){
+                logRootPath = servletContext.getInitParameter("log.root.path");
+            }
+
             if(logRootPath == null || logRootPath ==""){
                 logRootPath = servletContext.getRealPath("/");
             }
+            servletContext.log("log.root.path = " + logRootPath);
             System.setProperty("webapp.root", logRootPath);
+
             PropertyConfigurator.configure(this.getClass().getResourceAsStream("/" + location));
         }
 

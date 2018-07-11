@@ -40,6 +40,12 @@
             <artifactId>javax.servlet-api</artifactId>
             <version>${servlet.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.krista</groupId>
+            <artifactId>extend-utils</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
