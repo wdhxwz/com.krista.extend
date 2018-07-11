@@ -2,3 +2,4 @@ extend-parent/.idea/
 extend-parent/extend-springmvc/target/surefire-reports/com.krista.AppTest.txt
 extend-parent/extend-springmvc/target/
 *.iml
+extend-parent/extend-log4j/target/
