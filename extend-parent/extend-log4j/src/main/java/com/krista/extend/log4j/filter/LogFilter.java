@@ -24,7 +24,11 @@ public class LogFilter implements Filter {
         if (location != null) {
             ServletContext servletContext = filterConfig.getServletContext();
             servletContext.log("Initializing log4j from [" + this.getClass().getResource("/" + location).getPath() + "]");
-            System.setProperty("webapp.root", servletContext.getRealPath("/"));
+            String logRootPath = servletContext.getInitParameter("log.root.path");
+            if(logRootPath == null || logRootPath ==""){
+                logRootPath = servletContext.getRealPath("/");
+            }
+            System.setProperty("webapp.root", logRootPath);
             PropertyConfigurator.configure(this.getClass().getResourceAsStream("/" + location));
         }
 
