@@ -8,7 +8,7 @@
        http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd">
 
     <import resource="classpath*:web-servlet.xml"/>
-    <import resource="classpath*:applicationContext.xml"/>
+<!--    <import resource="classpath*:applicationContext.xml"/>-->
 
     <mvc:resources location="/image/" mapping="/image/**" />
     <mvc:resources location="/css/" mapping="/css/**" />
