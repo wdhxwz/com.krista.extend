@@ -9,8 +9,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>extend.springmvc</artifactId>
-    <name>extend.springmvc</name>
+    <artifactId>extend-springmvc</artifactId>
+    <name>extend-springmvc</name>
     <url>http://www.krista.com</url>
 
     <properties>

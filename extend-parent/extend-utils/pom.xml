@@ -15,10 +15,15 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <commmon.langs.version>3.5</commmon.langs.version>
     </properties>
 
     <dependencies>
-
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commmon.langs.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

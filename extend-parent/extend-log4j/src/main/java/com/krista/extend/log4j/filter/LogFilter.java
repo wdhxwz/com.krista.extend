@@ -1,6 +1,7 @@
 package com.krista.extend.log4j.filter;
 
 import com.krista.extend.utils.AppConfigUtil;
+import com.krista.extend.utils.StringUtil;
 import org.apache.log4j.PropertyConfigurator;
 import org.slf4j.MDC;
 import org.springframework.util.ResourceUtils;
@@ -29,16 +30,15 @@ public class LogFilter implements Filter {
 
             try{
                 logRootPath = AppConfigUtil.getProperty("log.root.path");
-                servletContext.log("aaa = " + logRootPath);
             }catch (Exception ex){
                 ex.printStackTrace();
             }
 
-            if(logRootPath == null || logRootPath ==""){
+            if(StringUtil.isEmpty(logRootPath)){
                 logRootPath = servletContext.getInitParameter("log.root.path");
             }
 
-            if(logRootPath == null || logRootPath ==""){
+            if(StringUtil.isEmpty(logRootPath)){
                 logRootPath = servletContext.getRealPath("/");
             }
             servletContext.log("log.root.path = " + logRootPath);
