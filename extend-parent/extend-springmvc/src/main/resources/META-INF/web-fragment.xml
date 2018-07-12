@@ -40,7 +40,7 @@
     <!-- Spring MVC转发规则 -->
     <servlet-mapping>
         <servlet-name>spring-mvc</servlet-name>
-        <url-pattern>*.do</url-pattern>
+        <url-pattern>/</url-pattern>
     </servlet-mapping>
 
     <!-- 编码过滤器 -->
@@ -60,6 +60,6 @@
     </filter>
     <filter-mapping>
         <filter-name>Encoding</filter-name>
-        <url-pattern>/*</url-pattern>
+        <url-pattern>*</url-pattern>
     </filter-mapping>
 </web-fragment>
