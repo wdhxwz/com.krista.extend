@@ -7,6 +7,7 @@ import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 /**
  * @Auther: dw_wanghonghong
@@ -36,8 +37,10 @@ public class KristaHandlerMapping extends RequestMappingHandlerMapping {
         String[] patterns;
         if (method != null && annotation.value().length == 0) {
             patterns = new String[]{createPattern(method.getName())};
-        } else {
-            patterns = resolveEmbeddedValuesInPatterns(createPatterns(annotation.value()));
+        }else if(method != null) {
+            patterns = createPatterns(resolveEmbeddedValuesInPatterns(annotation.value()));
+        }else {
+            patterns = resolveEmbeddedValuesInPatterns(annotation.value());
         }
         return new RequestMappingInfo(new PatternsRequestCondition(patterns, getUrlPathHelper(), getPathMatcher(), false, this.useTrailingSlashMatch(), this.getFileExtensions()),
                 new RequestMethodsRequestCondition(annotation.method()), new ParamsRequestCondition(annotation.params()), new HeadersRequestCondition(annotation.headers()),
