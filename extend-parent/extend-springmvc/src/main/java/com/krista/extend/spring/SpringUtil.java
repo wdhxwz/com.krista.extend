@@ -1,4 +1,4 @@
-package com.krista.extend.utils;
+package com.krista.extend.spring;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
