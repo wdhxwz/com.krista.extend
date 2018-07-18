@@ -1,5 +1,7 @@
 package com.krista;
 
+import com.krista.extend.poi.export.ExcelSheet;
+
 import java.util.Date;
 
 /**
@@ -7,6 +9,7 @@ import java.util.Date;
  * @Date: 2018/7/18 10:26
  * @Description:
  */
+@ExcelSheet(name = "用户")
 public class User {
     private String id;
     private String name;

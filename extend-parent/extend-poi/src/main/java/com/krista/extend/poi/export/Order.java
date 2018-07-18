@@ -11,6 +11,6 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface Order {
-    int value();
-    int order();
+    int value() default 0;
+    int order() default 0;
 }
