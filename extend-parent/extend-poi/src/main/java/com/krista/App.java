@@ -42,7 +42,8 @@ public class App {
         excelBeans.add(excelBean);
 
 //        System.out.println(poiTool.export(columnMap, users, "C:\\Users\\Administrator\\Desktop\\test.xlsx"));
-        System.out.println(poiTool.export(excelBeans, "C:\\Users\\Administrator\\Desktop\\test.xlsx"));
+//        System.out.println(poiTool.export(excelBeans, "C:\\Users\\Administrator\\Desktop\\test.xlsx"));
+        System.out.println(poiTool.exportByAnnotation( "C:\\Users\\Administrator\\Desktop\\test.xlsx",users));
         long end = System.currentTimeMillis();
         System.out.println("耗时(ms):" + (end - start));
 

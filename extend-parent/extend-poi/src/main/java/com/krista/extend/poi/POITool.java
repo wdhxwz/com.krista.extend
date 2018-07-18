@@ -1,6 +1,8 @@
 package com.krista.extend.poi;
 
 import com.krista.extend.poi.export.ExcelBean;
+import com.krista.extend.poi.export.ExcelSheet;
+import com.krista.extend.poi.export.SheetColumn;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -199,6 +201,10 @@ public class POITool {
         Map<String, String> map = excelBean.getColumnNameMap();
         Map<String, Integer> columnIndexMap = new HashMap<>();
 
+        if (map == null || map.isEmpty()) {
+            return;
+        }
+
         // 设置表头行
         Set<String> keySet = map.keySet();
         for (String key : keySet) {
@@ -262,16 +268,49 @@ public class POITool {
      * 功能描述: 根据注解导出Excel
      */
     public final <T> boolean exportByAnnotation(String filePath, List<T> sheets) {
+        boolean rs = RESULT_SUCC;
+        try {
+            checkFileAndCreateDir(filePath);
+            return exportByAnnotation(new FileOutputStream(filePath), sheets);
+        } catch (Exception ex) {
+            rs = RESULT_FAIL;
+            ex.printStackTrace();
+        }
 
-        return RESULT_SUCC;
+        return rs;
     }
 
     /**
      * 功能描述: 根据注解导出Excel
      */
     public final <T> boolean exportByAnnotation(OutputStream outputStream, List<T> sheets) {
+        if(sheets == null || sheets.isEmpty()){
+            return RESULT_FAIL;
+        }
 
-        return RESULT_SUCC;
+        Class<?> clz = sheets.get(0).getClass();
+        ExcelSheet excelSheet = clz.getAnnotation(ExcelSheet.class);
+        if(excelSheet == null){
+            throw new IllegalArgumentException("实体类没有ExcelSheet注解");
+        }
+        List<ExcelBean> excelBeans = new ArrayList<>();
+        ExcelBean excelBean = new ExcelBean();
+        excelBean.setSheetName(excelSheet.name());
+        excelBean.setContentList(sheets);
+
+        Field[] fields = clz.getDeclaredFields();
+        LinkedHashMap<String,String> map = new LinkedHashMap<>();
+        for(Field field : fields){
+            SheetColumn sheetColumn = field.getAnnotation(SheetColumn.class);
+            if(sheetColumn == null){
+                continue;
+            }
+            map.put(field.getName(),sheetColumn.name());
+        }
+        excelBean.setColumnNameMap(map);
+        excelBeans.add(excelBean);
+
+        return export(excelBeans,outputStream);
     }
 
     private void checkFileAndCreateDir(String filePath) {

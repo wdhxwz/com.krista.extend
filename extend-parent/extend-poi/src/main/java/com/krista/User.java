@@ -1,6 +1,7 @@
 package com.krista;
 
 import com.krista.extend.poi.export.ExcelSheet;
+import com.krista.extend.poi.export.SheetColumn;
 
 import java.util.Date;
 
@@ -11,9 +12,13 @@ import java.util.Date;
  */
 @ExcelSheet(name = "用户")
 public class User {
+    // @SheetColumn(name = "用户编号")
     private String id;
+    @SheetColumn(name = "用户姓名")
     private String name;
+    @SheetColumn(name = "用户年龄")
     private Integer age;
+    @SheetColumn(name = "用户生日")
     private Date birthDay;
 
     public String getId() {
