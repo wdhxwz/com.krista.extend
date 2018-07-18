@@ -2,18 +2,13 @@ package com.krista.extend.poi;
 
 import com.krista.extend.poi.export.ExcelBean;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.io.*;
+import java.lang.reflect.Field;
+import java.text.*;
+import java.util.*;
 
 /**
  * @Auther: dw_wanghonghong
@@ -25,26 +20,28 @@ public class POITool {
     private boolean RESULT_FAIL = false;
     private short fontSize = 10;
     private String timeFormat = "yyyy-MM-dd HH:mm:ss";
+    private SimpleDateFormat dateFormat;
+    private DecimalFormat decimalFormat;
     private String numberFormat = "0.00";
     private boolean isXLSX = true;
 
     // 两种字体样式，一种正常样式，一种是粗体样式
-    Font NormalFont;
-    Font BoldFont;
+    private Font NormalFont;
+    private Font BoldFont;
 
     // 标题（列头）样式
-    CellStyle titleStyle;
+    private CellStyle titleStyle;
 
     // 正文样式1：居中
-    CellStyle contentCenterStyle;
+    private CellStyle contentCenterStyle;
 
     // 正文样式：右对齐
-    CellStyle contentRightStyle;
+    private CellStyle contentRightStyle;
 
     // 正文样式：左对齐
-    CellStyle contentLeftStyle;
+    private CellStyle contentLeftStyle;
 
-    Workbook workbook;
+    private Workbook workbook;
 
     public POITool(){
 
@@ -113,6 +110,8 @@ public class POITool {
         contentRightStyle = workbook.createCellStyle();
         setStyle(contentRightStyle,NormalFont,CellStyle.ALIGN_RIGHT);
 
+        dateFormat = new SimpleDateFormat(timeFormat);
+        decimalFormat = new DecimalFormat(numberFormat);
         return this;
     }
 
@@ -124,7 +123,7 @@ public class POITool {
         cellStyle.setBorderLeft(CellStyle.BORDER_THIN);
         cellStyle.setBorderRight(CellStyle.BORDER_THIN);
         cellStyle.setBorderTop(CellStyle.BORDER_THIN);
-        cellStyle.setWrapText(true);
+        cellStyle.setWrapText(false);
     }
 
     public final boolean export(LinkedHashMap<String, String> columnNameMap, List<Object> contentList, OutputStream os) {
@@ -140,6 +139,7 @@ public class POITool {
 
     public final boolean export(LinkedHashMap<String, String> columnNameMap, List<Object> contentList, String filePath) {
         try {
+            checkFileAndCreateDir(filePath);
             return export(columnNameMap,contentList, new FileOutputStream(filePath));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -174,9 +174,84 @@ public class POITool {
             return RESULT_FAIL;
         }
 
+        for (ExcelBean excelBean : excelBeans) {
+            Sheet sheet = workbook.createSheet(excelBean.getSheetName());
 
+            int rowIndex = 0;
+            Row titleRow = sheet.createRow(rowIndex);
+
+            Map<String,String> map = excelBean.getColumnNameMap();
+            Map<String,Integer> columnIndexMap = new HashMap<>();
+            int columnIndex = 0;
+            Set<String> keySet = map.keySet();
+            for (String key: keySet) {
+                Cell cell = titleRow.createCell(columnIndex);
+                cell.setCellStyle(titleStyle);
+                cell.setCellValue(map.get(key));
+
+                columnIndexMap.put(key,columnIndex);
+                columnIndex ++;
+            }
+
+            rowIndex ++;
+            Map<String ,Field> fieldMap = new HashMap<>();
+            Class clz = null;
+            for(Object content : excelBean.getContentList()){
+                Row row = sheet.createRow(rowIndex);
+                if(clz == null) {
+                    clz = content.getClass();
+                }
+                Field[] fields = clz.getDeclaredFields();
+                for(String key : keySet){
+                    Field field = fieldMap.get(key);
+                    if(field == null){
+                        try {
+                            field = clz.getDeclaredField(key);
+                            field.setAccessible(true);
+                        } catch (NoSuchFieldException e) {
+                            field = null;
+                        }
+                    }
+
+                    if(field != null){
+                        fieldMap.put(key,field);
+                        Cell cell = row.createCell(columnIndexMap.get(key));
+                        cell.setCellStyle(contentCenterStyle);
+                        try {
+                            setCellValue(cell,field.getType(),field.get(content));
+                        } catch (IllegalAccessException e) {
+                        }
+                    }
+                }
+                rowIndex ++;
+            }
+
+            for(int i = 0 ;i < keySet.size();i++){
+                sheet.autoSizeColumn(i);
+            }
+        }
+        try {
+            workbook.write(outputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+            rs = RESULT_FAIL;
+        }
 
         return rs;
+    }
+
+    private void setCellValue(Cell cell,Class clz,Object value){
+        if(Date.class.equals(clz)){
+            cell.setCellValue(dateFormat.format(value));
+        }else if(Number.class.equals(clz) || Integer.class.equals(clz)){
+            cell.setCellValue(Double.parseDouble(decimalFormat.format(value)));
+        }else{
+            try{
+                cell.setCellValue(Double.parseDouble(value.toString()));
+            }catch (Exception ex){
+                cell.setCellValue(value.toString());
+            }
+        }
     }
 
     /**
@@ -193,6 +268,18 @@ public class POITool {
     public final <T> boolean exportByAnnotation(OutputStream outputStream,List<T> sheets){
 
         return RESULT_SUCC;
+    }
+
+    private void checkFileAndCreateDir(String filePath){
+        if(!(filePath.endsWith(".xlsx") || filePath.endsWith(".xls"))){
+            throw new IllegalArgumentException("文件格式不正确，不是Excel对应的格式");
+        }
+
+        String dir = filePath.substring(0,filePath.lastIndexOf(File.separator));
+        File file = new File(dir);
+        if(!file.exists()){
+            file.mkdirs();
+        }
     }
 
     public static void main(String[] args){
