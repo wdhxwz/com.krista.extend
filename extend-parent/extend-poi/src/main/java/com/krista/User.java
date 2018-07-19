@@ -20,6 +20,8 @@ public class User {
     private Integer age;
     @SheetColumn(name = "用户生日")
     private Date birthDay;
+    @SheetColumn(name = "创建时间",timeFormat = "yyyy-MM-dd HH:mm:ss")
+    private Date createTime;
 
     public String getId() {
         return id;
@@ -51,5 +53,13 @@ public class User {
 
     public void setBirthDay(Date birthDay) {
         this.birthDay = birthDay;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 }

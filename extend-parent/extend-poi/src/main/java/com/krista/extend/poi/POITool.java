@@ -6,6 +6,8 @@ import com.krista.extend.poi.export.SheetColumn;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -18,6 +20,8 @@ import java.util.*;
  * @Description: POI工具类
  */
 public class POITool {
+    private static Logger logger = LoggerFactory.getLogger(POITool.class);
+
     private boolean RESULT_SUCC = true;
     private boolean RESULT_FAIL = false;
     private short fontSize = 10;
@@ -26,6 +30,8 @@ public class POITool {
     private DecimalFormat decimalFormat;
     private String numberFormat = "0.00";
     private boolean isXLSX = true;
+    private Map<String,SimpleDateFormat> dateFormatMap = new HashMap<>();
+    private Map<String,DecimalFormat> numberFormatMap = new HashMap<>();
 
     // 两种字体样式，一种正常样式，一种是粗体样式
     private Font NormalFont;
@@ -144,7 +150,7 @@ public class POITool {
             checkFileAndCreateDir(filePath);
             return export(columnNameMap, contentList, new FileOutputStream(filePath));
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            logger.warn(e.getMessage(),e);
 
             return RESULT_FAIL;
         }
@@ -162,7 +168,7 @@ public class POITool {
             return export(excelBeans, outputStream);
         } catch (Exception ex) {
             rs = RESULT_FAIL;
-            ex.printStackTrace();
+            logger.warn(ex.getMessage(),ex);
         }
 
         return rs;
@@ -181,9 +187,11 @@ public class POITool {
             addSheet(workbook, excelBean);
         }
         try {
+            logger.info("开始保存文件");
             workbook.write(outputStream);
+            logger.info("开始保存文件");
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.warn(e.getMessage(),e);
             rs = RESULT_FAIL;
         }
 
@@ -191,7 +199,9 @@ public class POITool {
     }
 
     private void addSheet(Workbook workbook, ExcelBean excelBean) {
+        logger.info("开始新建表格");
         Sheet sheet = workbook.createSheet(excelBean.getSheetName());
+        logger.info("结束新建表格");
         Row row = null;
         Cell cell = null;
 
@@ -217,6 +227,7 @@ public class POITool {
         }
 
         // 缓存反射信息
+        logger.info("开始获取反射信息");
         Map<String, Field> fieldMap = new HashMap<>();
         Class clz = excelBean.getContentList().get(0).getClass();
         Field[] fields = clz.getDeclaredFields();
@@ -224,8 +235,10 @@ public class POITool {
             field.setAccessible(true);
             fieldMap.put(field.getName(), field);
         }
+        logger.info("结束获取反射信息");
 
         rowIndex++;
+        logger.info("开始创建内容");
         for (Object content : excelBean.getContentList()) {
             row = sheet.createRow(rowIndex);
             for (String key : keySet) {
@@ -237,28 +250,38 @@ public class POITool {
                 cell = row.createCell(columnIndexMap.get(key));
                 cell.setCellStyle(contentCenterStyle);
                 try {
-                    setCellValue(cell, field.getType(), field.get(content));
+                    setCellValue(cell, field.getType(), field.get(content),field.getName());
                 } catch (IllegalAccessException e) {
-                    e.printStackTrace();
+                   logger.warn(e.getMessage(),e);
                 }
             }
             rowIndex++;
         }
+        logger.info("结束创建内容");
 
 //        for(int i = 0 ;i < keySet.size();i++){
 ////            sheet.autoSizeColumn(i);
 ////        }
     }
 
-    private void setCellValue(Cell cell, Class clz, Object value) {
+    private void setCellValue(Cell cell, Class clz, Object value,String fieldName) {
         if (Date.class.equals(clz)) {
-            cell.setCellValue(dateFormat.format(value));
+            if(dateFormatMap.containsKey(fieldName)){
+                cell.setCellValue(dateFormatMap.get(fieldName).format(value));
+            }else{
+                cell.setCellValue(dateFormat.format(value));
+            }
         } else if (Number.class.equals(clz) || Integer.class.equals(clz)) {
-            cell.setCellValue(Double.parseDouble(decimalFormat.format(value)));
+            if(numberFormatMap.containsKey(fieldName)){
+                cell.setCellValue(Double.parseDouble(numberFormatMap.get(fieldName).format(value)));
+            }else {
+                cell.setCellValue(Double.parseDouble(decimalFormat.format(value)));
+            }
         } else {
             try {
                 cell.setCellValue(Double.parseDouble(value.toString()));
             } catch (Exception ex) {
+                logger.warn(ex.getMessage(),ex);
                 cell.setCellValue(value.toString());
             }
         }
@@ -274,7 +297,7 @@ public class POITool {
             return exportByAnnotation(new FileOutputStream(filePath), sheets);
         } catch (Exception ex) {
             rs = RESULT_FAIL;
-            ex.printStackTrace();
+            logger.warn(ex.getMessage(),ex);
         }
 
         return rs;
@@ -288,6 +311,7 @@ public class POITool {
             return RESULT_FAIL;
         }
 
+        logger.info("开始构造数据");
         Class<?> clz = sheets.get(0).getClass();
         ExcelSheet excelSheet = clz.getAnnotation(ExcelSheet.class);
         if(excelSheet == null){
@@ -306,14 +330,22 @@ public class POITool {
                 continue;
             }
             map.put(field.getName(),sheetColumn.name());
+            if (sheetColumn.timeFormat().length() > 0) {
+                dateFormatMap.put(field.getName(), new SimpleDateFormat(sheetColumn.timeFormat()));
+            }
+            if (sheetColumn.numberFormat().length() > 0) {
+                numberFormatMap.put(field.getName(), new DecimalFormat(sheetColumn.numberFormat()));
+            }
         }
         excelBean.setColumnNameMap(map);
         excelBeans.add(excelBean);
+        logger.info("结束构造数据");
 
         return export(excelBeans,outputStream);
     }
 
     private void checkFileAndCreateDir(String filePath) {
+        logger.info("开始检查文件");
         if (!(filePath.endsWith(".xlsx") || filePath.endsWith(".xls"))) {
             throw new IllegalArgumentException("文件格式不正确，不是Excel对应的格式");
         }
@@ -323,6 +355,7 @@ public class POITool {
         if (!file.exists()) {
             file.mkdirs();
         }
+        logger.info("结束检查文件");
     }
 
     public static void main(String[] args) {
