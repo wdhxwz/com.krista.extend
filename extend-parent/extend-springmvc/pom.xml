@@ -96,6 +96,13 @@
             <artifactId>spring-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!-- 集成log4j -->
+        <dependency>
+            <groupId>com.krista</groupId>
+            <artifactId>extend-log4j</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
