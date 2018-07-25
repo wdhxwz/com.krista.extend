@@ -1,5 +1,6 @@
 package com.krista.extend.spring.aop;
 
+import org.aspectj.lang.JoinPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,5 +12,13 @@ import org.slf4j.LoggerFactory;
 public class ControllerLogAop {
     private static Logger logger = LoggerFactory.getLogger(ControllerLogAop.class);
 
+    public void doBefore(JoinPoint joinPoint){
+        Object[] args = joinPoint.getArgs();
 
+        logger.info("开始执行：{}.{}" ,joinPoint.getTarget().getClass().getName(),joinPoint.getSignature().getName());
+    }
+
+    public void doAfter(JoinPoint joinPoint, Object returnValue){
+        logger.info("结束执行：{}.{},返回结果:{}",joinPoint.getTarget().getClass().getName(),joinPoint.getSignature().getName(),returnValue);
+    }
 }

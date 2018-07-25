@@ -54,7 +54,7 @@ public class LogFilter implements Filter {
         try{
             returnValue = AppConfigUtil.getProperty(key);
         }catch (Exception ex){
-            ex.printStackTrace();
+            servletContext.log("读取app.properties配置异常",ex);
         }
 
         if(StringUtil.isEmpty(returnValue)){

@@ -27,6 +27,7 @@
     </bean>
 
     <import resource="classpath*:web-servlet.xml"/>
+    <import resource="aopContext.xml"/>
 
     <mvc:resources location="/image/" mapping="/image/**" />
     <mvc:resources location="/css/" mapping="/css/**" />
