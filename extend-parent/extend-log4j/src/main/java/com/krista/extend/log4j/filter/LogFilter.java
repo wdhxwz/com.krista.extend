@@ -2,13 +2,12 @@ package com.krista.extend.log4j.filter;
 
 import com.krista.extend.utils.AppConfigUtil;
 import com.krista.extend.utils.StringUtil;
+import com.krista.extend.utils.UUIDUtil;
 import org.apache.log4j.PropertyConfigurator;
 import org.slf4j.MDC;
 
-
 import javax.servlet.*;
 import java.io.IOException;
-import java.util.UUID;
 
 /**
  * @Auther: dw_wanghonghong
@@ -37,7 +36,7 @@ public class LogFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         String requestId  = servletRequest.getParameter(logKey);
         if(StringUtil.isEmpty(requestId)){
-            requestId = UUID.randomUUID().toString().replace("-","").substring(0,10);
+            requestId = UUIDUtil.uuid(10);
         }
 
         MDC.put("requestId", requestId);

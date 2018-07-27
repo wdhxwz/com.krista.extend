@@ -62,6 +62,7 @@ public class ControllerLogAop {
             startTimeMap.set(System.currentTimeMillis());
         }catch (Exception ex){
             logger.warn("aop doBefore 记录日志异常",ex);
+            startTimeMap.set(System.currentTimeMillis());
         }
     }
 
@@ -81,6 +82,9 @@ public class ControllerLogAop {
                 }else{
                     result = JsonUtil.toJson(returnValue);
                 }
+
+                // 如果doBefore异常了，这里startTimeMap.get() 获取到空
+                // 在doBefore捕获到异常后，加上startTimeMap.set(System.currentTimeMillis());
                 logger.info("response cost timemillis(ms)：{},data:{}", System.currentTimeMillis() - startTimeMap.get(), result);
                 startTimeMap.remove();
                 isLogMap.remove();

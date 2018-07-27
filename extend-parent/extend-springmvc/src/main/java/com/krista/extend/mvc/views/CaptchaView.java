@@ -2,8 +2,8 @@ package com.krista.extend.mvc.views;
 
 import com.krista.extend.spring.SpringUtil;
 import com.krista.extend.utils.StringUtil;
-import com.octo.captcha.Captcha;
-import com.octo.captcha.service.multitype.GenericManageableCaptchaService;
+//import com.octo.captcha.Captcha;
+//import com.octo.captcha.service.multitype.GenericManageableCaptchaService;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.AbstractUrlBasedView;
 
@@ -45,17 +45,17 @@ public class CaptchaView extends ModelAndView {
             HttpSession session = request.getSession();
             String sessionKey = getCaptchaSessionKey(request);
 
-            GenericManageableCaptchaService imageCaptchaService = SpringUtil.getBean(GenericManageableCaptchaService.class);
-            Captcha captcha = imageCaptchaService.getEngine().getNextCaptcha();
-            String code = captcha.getResponse();
-            BufferedImage bi = (BufferedImage)captcha.getChallenge();
-            session.setAttribute(sessionKey, code);
-
-            Cookie cookie = new Cookie("code",code);
-            response.addCookie(cookie);
+//            GenericManageableCaptchaService imageCaptchaService = SpringUtil.getBean(GenericManageableCaptchaService.class);
+//            Captcha captcha = imageCaptchaService.getEngine().getNextCaptcha();
+//            String code = captcha.getResponse();
+//            BufferedImage bi = (BufferedImage)captcha.getChallenge();
+//            session.setAttribute(sessionKey, code);
+//
+//            Cookie cookie = new Cookie("code",code);
+//            response.addCookie(cookie);
 
             ServletOutputStream out = response.getOutputStream();
-            ImageIO.write(bi, "jpg", out);
+//            ImageIO.write(bi, "jpg", out);
             try {
                 out.flush();
             } finally {
