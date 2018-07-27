@@ -24,7 +24,7 @@ public class JsonMapper {
 
     private static JsonMapper defaultMapper;
 
-    private ObjectMapper mapper;
+    private static ObjectMapper mapper;
 
     public JsonMapper() {
         this(null);

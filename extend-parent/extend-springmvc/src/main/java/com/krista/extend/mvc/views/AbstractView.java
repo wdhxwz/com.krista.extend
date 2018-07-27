@@ -1,5 +1,6 @@
 package com.krista.extend.mvc.views;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.AbstractUrlBasedView;
 
@@ -13,10 +14,9 @@ import java.util.Map;
  * @Date: 2018/7/13 14:57
  * @Description: z自定义的抽象视图
  */
-public abstract class AbstractView extends ModelAndView {
+public abstract class AbstractView extends ModelAndView{
 
     private AbstractUrlBasedView view = new AbstractUrlBasedView() {
-
         @Override
         protected void renderMergedOutputModel(Map<String, Object> map, HttpServletRequest request, HttpServletResponse response) throws Exception {
             String body = null;
@@ -46,4 +46,6 @@ public abstract class AbstractView extends ModelAndView {
     public abstract String getContentType();
 
     public abstract String getBody(HttpServletRequest request, HttpServletResponse response);
+
+    public abstract Object getResult();
 }
