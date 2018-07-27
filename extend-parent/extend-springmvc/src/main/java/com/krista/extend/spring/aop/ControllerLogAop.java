@@ -72,8 +72,9 @@ public class ControllerLogAop {
                 if (returnValue instanceof AbstractView) {
                     result = JsonUtil.toJson(((AbstractView) returnValue).getResult());
                 } else if(returnValue instanceof ModelAndView){
-                    if(((ModelAndView) returnValue).getModel() != null){
-                        result = JsonUtil.toJson(((ModelAndView) returnValue).getModel());
+                    Map<String, Object> model = ((ModelAndView) returnValue).getModel();
+                    if(model != null && !model.isEmpty()){
+                        result = JsonUtil.toJson(model);
                     }else {
                         result = returnValue.getClass().getTypeName();
                     }

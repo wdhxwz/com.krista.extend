@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-       http://www.springframework.org/schema/beans/spring-beans.xsd"
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd"
        default-lazy-init="true">
+
+    <context:property-placeholder
+            ignore-unresolvable="true" location="classpath:app.properties" />
 
     <bean id="captchaService" class="com.octo.captcha.service.multitype.GenericManageableCaptchaService">
         <constructor-arg index="0" ref="imageEngine"/>
@@ -76,22 +82,22 @@
     <bean id="backGenUni" class="com.octo.captcha.component.image.backgroundgenerator.UniColorBackgroundGenerator">
         <!--背景宽度-->
         <constructor-arg index="0">
-            <value>110</value>
+            <value>${captcha.width:110}</value>
         </constructor-arg>
         <!--背景高度-->
         <constructor-arg index="1">
-            <value>50</value>
+            <value>${captcha.height:50}</value>
         </constructor-arg>
     </bean>
 
     <bean id="decoratedPaster" class="com.octo.captcha.component.image.textpaster.DecoratedRandomTextPaster">
         <!--最大字符长度-->
         <constructor-arg type="java.lang.Integer" index="0">
-            <value>4</value>
+            <value>${captcha.words:4}</value>
         </constructor-arg>
         <!--最小字符长度-->
         <constructor-arg type="java.lang.Integer" index="1">
-            <value>4</value>
+            <value>${captcha.words:4}</value>
         </constructor-arg>
         <!--文本颜色-->
         <constructor-arg index="2">
