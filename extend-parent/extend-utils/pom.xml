@@ -16,6 +16,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <commmon.langs.version>3.5</commmon.langs.version>
+        <commons.collections.version>3.2.1</commons.collections.version>
         <servlet.version>3.1.0</servlet.version>
     </properties>
 
@@ -24,6 +25,11 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>${commmon.langs.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>${commons.collections.version}</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>

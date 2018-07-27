@@ -27,4 +27,8 @@ public class SpringUtil implements ApplicationContextAware {
     public static void publishEvent(ApplicationEvent event){
         applicationContext.publishEvent(event);
     }
+
+    public static ApplicationContext getApplicationContext(){
+        return applicationContext;
+    }
 }
