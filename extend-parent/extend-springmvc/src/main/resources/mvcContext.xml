@@ -9,14 +9,21 @@
        http://www.springframework.org/schema/mvc/spring-mvc.xsd
        http://www.springframework.org/schema/context
        http://www.springframework.org/schema/context/spring-context.xsd">
-    <context:property-placeholder location="classpath:app.properties" />
+    <context:property-placeholder location="classpath:app.properties"/>
+
+<!--    <context:component-scan base-package="com.krista.extend.mvc"
+                            use-default-filters="false">
+        &lt;!&ndash; 只扫描指定包下的@Controller注解 &ndash;&gt;
+        <context:include-filter type="annotation"
+                                expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>-->
 
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"
           id="viewResolver">
-        <property name="prefix" value="/WEB-INF/views/" />
-        <property name="suffix" value=".jsp" />
-        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
-        <property name="contentType" value="text/html; charset=UTF-8" />
+        <property name="prefix" value="/WEB-INF/views/"/>
+        <property name="suffix" value=".jsp"/>
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+        <property name="contentType" value="text/html; charset=UTF-8"/>
     </bean>
 
     <bean id="kristaHandlerMapping" class="com.krista.extend.mvc.KristaHandlerMapping"/>
@@ -24,7 +31,7 @@
         <property name="messageConverters">
             <list>
                 <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
-                    <property name="prettyPrint" value="true" />
+                    <property name="prettyPrint" value="true"/>
                     <property name="objectMapper">
                         <bean class="com.fasterxml.jackson.databind.ObjectMapper">
                             <property name="dateFormat">
@@ -42,9 +49,17 @@
     <import resource="classpath*:web-servlet.xml"/>
     <import resource="aopContext.xml"/>
 
-    <mvc:resources location="/image/" mapping="/image/**" />
-    <mvc:resources location="/css/" mapping="/css/**" />
-    <mvc:resources location="/js/" mapping="/js/**" />
+    <!-- 静态资源 -->
+    <mvc:resources location="/image/" mapping="/image/**"/>
+    <mvc:resources location="/css/" mapping="/css/**"/>
+    <mvc:resources location="/js/" mapping="/js/**"/>
+
+    <!-- 拦截器 -->
+    <mvc:interceptors>
+        <bean id="limitInterceptor" class="com.krista.extend.mvc.limit.LimitInterceptor">
+            <property name="resourceName" value="${limit.service.name:memoryLimitService}"/>
+        </bean>
+    </mvc:interceptors>
 
     <!-- 文件上传 -->
     <bean id="fileUploadController" class="com.krista.extend.mvc.upload.FileUploadController">
@@ -53,12 +68,12 @@
     <bean id="multipartResolver"
           class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
         <!-- 解析request的编码 ，Default is ISO-8859-1 -->
-        <property name="defaultEncoding" value="UTF-8" />
+        <property name="defaultEncoding" value="UTF-8"/>
         <!-- 设置最大允许的大小(字节)。-1表示没有限制(默认) 1024*1024*10=10MB -->
-        <property name="maxUploadSize" value="1048576000" />
+        <property name="maxUploadSize" value="1048576000"/>
         <!--被允许的最大的内存的大小，Default is 10240 bytes -->
-        <property name="maxInMemorySize" value="20480" />
+        <property name="maxInMemorySize" value="20480"/>
         <!-- 一个类似懒加载的属性.可以定义该属性.让解析文件的时候再抛异常,然后Controller中定义异常处理的方法 -->
-        <property name="resolveLazily" value="true" />
+        <property name="resolveLazily" value="true"/>
     </bean>
 </beans>
