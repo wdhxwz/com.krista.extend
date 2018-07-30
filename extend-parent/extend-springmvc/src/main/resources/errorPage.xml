@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<errorpage xmlns="http://leopard.yy.com/schema/leopard"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://leopard.yy.com/schema/leopard http://leopard.yy.com/schema/leopard-0.1.xsd">
+    <!--
+        <error url="/" page="/">
+            <exception type="DuowanRuntimeException" statusCode="-1" log="info"/>
+        </error>
+     -->
+    <error url="/" page="/">
+        <exception type="PrivilegeException" statusCode="200" log="info"/>
+        <exception type="DuowanRuntimeException" statusCode="-1" log="info"/>
+    </error>
+
+</errorpage>
