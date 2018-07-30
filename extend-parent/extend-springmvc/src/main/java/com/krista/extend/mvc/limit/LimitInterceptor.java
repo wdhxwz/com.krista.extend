@@ -26,6 +26,9 @@ public class LimitInterceptor implements HandlerInterceptor{
         String url = request.getRequestURI();
         String ip = IpUtil.getIpAddr(request);
         LimitService limitService = SpringUtil.getBean(LimitService.class,resourceName);
+        if(!limitService.isLimit(url)){
+            return true;
+        }
         boolean result = limitService.isLimit(url) && limitService.isOverFrequency(ip,url);
         if(result){
             throw new LimitException("访问太频繁,请稍后再试");

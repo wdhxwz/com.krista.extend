@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata modelVersion="1.1.0">
+  <groupId>com.octo.captcha</groupId>
+  <artifactId>jcaptcha-parent</artifactId>
+  <version>2.0.0-SNAPSHOT</version>
+  <versioning>
+    <snapshot>
+      <timestamp>20140326.102000</timestamp>
+      <buildNumber>2</buildNumber>
+    </snapshot>
+    <lastUpdated>20140326102000</lastUpdated>
+    <snapshotVersions>
+      <snapshotVersion>
+        <extension>pom</extension>
+        <value>2.0.0-20140326.102000-2</value>
+        <updated>20140326102000</updated>
+      </snapshotVersion>
+    </snapshotVersions>
+  </versioning>
+</metadata>
