@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<errorpage xmlns="http://leopard.yy.com/schema/leopard"
+<errorpage xmlns="http://www.krista.com/schema/extend"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-           xsi:schemaLocation="http://leopard.yy.com/schema/leopard http://leopard.yy.com/schema/leopard-0.1.xsd">
+           xsi:schemaLocation="http://www.krista.com/schema/extend http://www.krista.com/schema/krista.xsd">
     <!--
         <error url="/" page="/">
             <exception type="DuowanRuntimeException" statusCode="-1" log="info"/>
