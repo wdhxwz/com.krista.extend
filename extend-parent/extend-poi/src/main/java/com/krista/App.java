@@ -1,7 +1,7 @@
 package com.krista;
 
-import com.krista.extend.poi.POITool;
-import com.krista.extend.poi.export.ExcelBean;
+import com.krista.extend.poi.ExcelWriter;
+import com.krista.extend.poi.bean.ExcelBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,7 +15,7 @@ public class App {
     private static Logger logger = LoggerFactory.getLogger(App.class);
 
     public static void main(String[] args) throws IOException {
-        POITool poiTool = new POITool()
+        ExcelWriter poiTool = new ExcelWriter()
                 .setNumberFormat("#")
                 .setTimeFormat("yyyy-MM-dd")
                 .setFontSize((short) 12)
@@ -28,12 +28,12 @@ public class App {
         columnMap.put("birthDay", "生日");
 
         List<Object> users = new ArrayList<>();
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 100; i++) {
             User user = new User();
             user.setAge(i);
             user.setBirthDay(new Date());
             user.setCreateTime(new Date());
-            user.setId(i + "");
+            user.setId(i + 0L);
             user.setName("user" + i);
             users.add(user);
         }
@@ -46,9 +46,9 @@ public class App {
         excelBean.setContentList(users);
         excelBeans.add(excelBean);
 
-//        System.out.println(poiTool.export(columnMap, users, "C:\\Users\\Administrator\\Desktop\\test.xlsx"));
-//        System.out.println(poiTool.export(excelBeans, "C:\\Users\\Administrator\\Desktop\\test.xlsx"));
-        System.out.println(poiTool.exportByAnnotation( "C:\\Users\\Administrator\\Desktop\\test.xlsx",users));
+//        System.out.println(poiTool.bean(columnMap, users, "C:\\Users\\Administrator\\Desktop\\test.xlsx"));
+//        System.out.println(poiTool.bean(excelBeans, "C:\\Users\\Administrator\\Desktop\\test.xlsx"));
+        System.out.println(poiTool.exportByAnnotation( "C:\\Users\\wdhcxx\\Desktop\\test.xlsx",users));
         logger.info("结束导出数据");
 
         System.out.println("Hello World!");

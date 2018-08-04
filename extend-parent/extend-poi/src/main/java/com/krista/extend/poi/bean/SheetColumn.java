@@ -1,4 +1,4 @@
-package com.krista.extend.poi.export;
+package com.krista.extend.poi.bean;
 
 import java.lang.annotation.*;
 

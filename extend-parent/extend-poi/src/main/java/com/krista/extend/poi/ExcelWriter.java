@@ -1,8 +1,8 @@
 package com.krista.extend.poi;
 
-import com.krista.extend.poi.export.ExcelBean;
-import com.krista.extend.poi.export.ExcelSheet;
-import com.krista.extend.poi.export.SheetColumn;
+import com.krista.extend.poi.bean.ExcelBean;
+import com.krista.extend.poi.bean.ExcelSheet;
+import com.krista.extend.poi.bean.SheetColumn;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -19,8 +19,8 @@ import java.util.*;
  * @Date: 2018/7/17 14:56
  * @Description: POI工具类
  */
-public class POITool {
-    private static Logger logger = LoggerFactory.getLogger(POITool.class);
+public class ExcelWriter {
+    private static Logger logger = LoggerFactory.getLogger(ExcelWriter.class);
 
     private boolean RESULT_SUCC = true;
     private boolean RESULT_FAIL = false;
@@ -51,14 +51,14 @@ public class POITool {
 
     private Workbook workbook;
 
-    public POITool() {
+    public ExcelWriter() {
 
     }
 
     /**
      * 功能描述: 设置字体大小
      */
-    public POITool setFontSize(short fontSize) {
+    public ExcelWriter setFontSize(short fontSize) {
         this.fontSize = fontSize;
 
         return this;
@@ -67,7 +67,7 @@ public class POITool {
     /**
      * 功能描述: 设置日期的输出格式
      */
-    public POITool setTimeFormat(String timeFormat) {
+    public ExcelWriter setTimeFormat(String timeFormat) {
         this.timeFormat = timeFormat;
 
         return this;
@@ -76,7 +76,7 @@ public class POITool {
     /**
      * 功能描述: 设置数字的输出格式
      */
-    public POITool setNumberFormat(String numberFormat) {
+    public ExcelWriter setNumberFormat(String numberFormat) {
         this.numberFormat = numberFormat;
 
         return this;
@@ -85,7 +85,7 @@ public class POITool {
     /**
      * 功能描述: 设置Excel格式，true为Excel 2007及其以上，否则为Excel 2003
      */
-    public POITool setXLSX(boolean isXLSX) {
+    public ExcelWriter setXLSX(boolean isXLSX) {
         this.isXLSX = isXLSX;
 
         return this;
@@ -94,7 +94,7 @@ public class POITool {
     /**
      * 功能描述: 配置样式和字体
      */
-    public POITool config() {
+    public ExcelWriter config() {
         workbook = isXLSX ? new XSSFWorkbook() : new HSSFWorkbook();
 
         NormalFont = workbook.createFont();
@@ -187,9 +187,7 @@ public class POITool {
             addSheet(workbook, excelBean);
         }
         try {
-            logger.info("开始保存文件");
             workbook.write(outputStream);
-            logger.info("开始保存文件");
         } catch (IOException e) {
             logger.warn(e.getMessage(),e);
             rs = RESULT_FAIL;
@@ -199,9 +197,7 @@ public class POITool {
     }
 
     private void addSheet(Workbook workbook, ExcelBean excelBean) {
-        logger.info("开始新建表格");
         Sheet sheet = workbook.createSheet(excelBean.getSheetName());
-        logger.info("结束新建表格");
         Row row = null;
         Cell cell = null;
 
@@ -227,7 +223,6 @@ public class POITool {
         }
 
         // 缓存反射信息
-        logger.info("开始获取反射信息");
         Map<String, Field> fieldMap = new HashMap<>();
         Class clz = excelBean.getContentList().get(0).getClass();
         Field[] fields = clz.getDeclaredFields();
@@ -235,10 +230,8 @@ public class POITool {
             field.setAccessible(true);
             fieldMap.put(field.getName(), field);
         }
-        logger.info("结束获取反射信息");
 
         rowIndex++;
-        logger.info("开始创建内容");
         for (Object content : excelBean.getContentList()) {
             row = sheet.createRow(rowIndex);
             for (String key : keySet) {
@@ -257,8 +250,8 @@ public class POITool {
             }
             rowIndex++;
         }
-        logger.info("结束创建内容");
 
+        // 自动列宽：很耗时间
 //        for(int i = 0 ;i < keySet.size();i++){
 ////            sheet.autoSizeColumn(i);
 ////        }
@@ -281,7 +274,6 @@ public class POITool {
             try {
                 cell.setCellValue(Double.parseDouble(value.toString()));
             } catch (Exception ex) {
-                logger.warn(ex.getMessage(),ex);
                 cell.setCellValue(value.toString());
             }
         }
@@ -311,7 +303,6 @@ public class POITool {
             return RESULT_FAIL;
         }
 
-        logger.info("开始构造数据");
         Class<?> clz = sheets.get(0).getClass();
         ExcelSheet excelSheet = clz.getAnnotation(ExcelSheet.class);
         if(excelSheet == null){
@@ -339,13 +330,11 @@ public class POITool {
         }
         excelBean.setColumnNameMap(map);
         excelBeans.add(excelBean);
-        logger.info("结束构造数据");
 
         return export(excelBeans,outputStream);
     }
 
     private void checkFileAndCreateDir(String filePath) {
-        logger.info("开始检查文件");
         if (!(filePath.endsWith(".xlsx") || filePath.endsWith(".xls"))) {
             throw new IllegalArgumentException("文件格式不正确，不是Excel对应的格式");
         }
@@ -355,30 +344,5 @@ public class POITool {
         if (!file.exists()) {
             file.mkdirs();
         }
-        logger.info("结束检查文件");
-    }
-
-    public static void main(String[] args) {
-        double pi = 3.1415927;//圆周率
-        //取一位整数
-        System.out.println(new DecimalFormat("0").format(pi));//3
-        //取一位整数和两位小数
-        System.out.println(new DecimalFormat("0.00").format(pi));//3.14
-        //取两位整数和三位小数，整数不足部分以0填补。
-        System.out.println(new DecimalFormat("00.000").format(pi));//03.142
-        //取所有整数部分
-        System.out.println(new DecimalFormat("#").format(pi));//3
-        //以百分比方式计数，并取两位小数
-        System.out.println(new DecimalFormat("#.##%").format(pi));//314.16%
-
-        long c = 299792458;//光速
-        //显示为科学计数法，并取五位小数
-        System.out.println(new DecimalFormat("#.#####E0").format(c));//2.99792E8
-        //显示为两位整数的科学计数法，并取四位小数
-        System.out.println(new DecimalFormat("00.####E0").format(c));//29.9792E7
-        //每三位以逗号进行分隔。
-        System.out.println(new DecimalFormat(",###").format(c));//299,792,458
-        //将格式嵌入文本
-        System.out.println(new DecimalFormat("光速大小为每秒,###米").format(c)); //光速大小为每秒299,792,458米
     }
 }
