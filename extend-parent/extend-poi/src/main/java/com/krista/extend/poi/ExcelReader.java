@@ -1,5 +1,8 @@
 package com.krista.extend.poi;
 
+import com.krista.extend.poi.bean.ExcelBean;
+import com.krista.extend.poi.bean.ExcelSheet;
+import com.krista.extend.poi.bean.SheetColumn;
 import com.krista.extend.utils.AssertUtil;
 import com.krista.extend.utils.TypeUtil;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -54,9 +57,19 @@ public class ExcelReader {
         return this;
     }
 
-    public <T> List<T> getList(int sheetIndex, Class<T> clz) throws IllegalAccessException, InstantiationException {
+    /**
+     *  将指定sheet转为List
+     * @param sheetIndex
+     * @param clz
+     */
+    public <T> ExcelBean<T> read(int sheetIndex, Class<T> clz) throws IllegalAccessException, InstantiationException {
+        ExcelBean<T> excelBean = new ExcelBean<>();
+
         // 下标超出了实际范围，会抛异常
         Sheet sheet = workbook.getSheetAt(sheetIndex);
+        String sheetName = sheet.getSheetName();
+        excelBean.setSheetName(sheetName);
+        excelBean.setColumnNameMap(new HashMap<String,String>());
 
         Map<String, Integer> headerMap = new HashMap<>();
         int columnCount = 0;
@@ -65,15 +78,18 @@ public class ExcelReader {
         if (columnHeaderRow > -1) {
             Row row = sheet.getRow(columnHeaderRow);
             columnCount = row.getLastCellNum();
+            String key = "";
             for (int columnIndex = 0; columnIndex < columnCount; columnIndex++) {
-                if (columnNameMap.containsKey(row.getCell(columnIndex).getStringCellValue())) {
-                    headerMap.put(columnNameMap.get(row.getCell(columnIndex).getStringCellValue()), columnIndex);
+                key = row.getCell(columnIndex).getStringCellValue();
+                if (columnNameMap.containsKey(key)) {
+                    headerMap.put(columnNameMap.get(key), columnIndex);
+                    excelBean.getColumnNameMap().put(columnNameMap.get(key),key);
                 }
             }
         }
 
         if (headerMap.isEmpty()) {
-            return null;
+            return excelBean;
         }
 
         int beginRowIndex = columnHeaderRow + 1 >= 0 ? columnHeaderRow + 1 : 0;
@@ -101,8 +117,29 @@ public class ExcelReader {
             }
             list.add(entity);
         }
+        excelBean.setContentList(list);
 
-        return list;
+        return excelBean;
+    }
+
+    public <T> ExcelBean<T> readByAnnotation(Class<T> clz) throws InstantiationException, IllegalAccessException {
+        ExcelSheet excelSheet = clz.getAnnotation(ExcelSheet.class);
+        if(excelSheet == null){
+            throw new IllegalArgumentException("目标类没有ExcelSheet注解");
+        }
+        String sheetName = excelSheet.name();
+
+        Map<String,Field> fieldMap = new HashMap<>();
+        for (Field field: clz.getDeclaredFields()) {
+            field.setAccessible(true);
+            fieldMap.put(field.getName(),field);
+            SheetColumn sheetColumn = field.getAnnotation(SheetColumn.class);
+            if(sheetColumn != null){
+                columnNameMap.put(sheetColumn.name(),field.getName());
+            }
+        }
+
+        return read(workbook.getSheetIndex(sheetName),clz);
     }
 
     /**
@@ -110,7 +147,7 @@ public class ExcelReader {
      * @param sheetIndex
      * @return
      */
-    public List<List<String>> getData(int sheetIndex) {
+    public List<List<String>> read(int sheetIndex) {
         Sheet sheet = workbook.getSheetAt(sheetIndex);
         List<List<String>> dataList = new ArrayList<>();
         int lastRow = sheet.getLastRowNum();

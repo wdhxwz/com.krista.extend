@@ -1,6 +1,7 @@
 package com.krista;
 
 import com.krista.extend.poi.ExcelReader;
+import com.krista.extend.poi.bean.ExcelBean;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 import java.io.IOException;
@@ -18,7 +19,8 @@ public class ExcelReaderApp {
         columnMap.put( "用户生日","birthDay");
         String path = "C:\\Users\\wdhcxx\\Desktop\\test.xlsx";
         ExcelReader excelReader = new ExcelReader(path).setColumnHeaderRow(0).setColumnNameMap(columnMap);
-        List<User> list = excelReader.getList(0,User.class);
-        System.out.println(list.size());
+        // ExcelBean<User>  excelBean = excelReader.read(0,User.class);
+        ExcelBean<User> excelBean = excelReader.readByAnnotation(User.class);
+        System.out.println(excelBean.getContentList() == null ? 0: excelBean.getContentList().size());
     }
 }
