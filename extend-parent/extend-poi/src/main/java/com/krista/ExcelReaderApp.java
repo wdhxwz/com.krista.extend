@@ -12,15 +12,19 @@ import java.util.Map;
 
 public class ExcelReaderApp {
     public static void main(String[] args) throws IOException, InvalidFormatException, IllegalAccessException, ParseException, InstantiationException {
-        Map<String, String> columnMap = new HashMap<>();
-        columnMap.put( "用户编号","id");
-        columnMap.put( "用户姓名","name");
-        columnMap.put( "用户年龄","age");
-        columnMap.put( "用户生日","birthDay");
-        String path = "C:\\Users\\wdhcxx\\Desktop\\test.xlsx";
-        ExcelReader excelReader = new ExcelReader(path).setColumnHeaderRow(0).setColumnNameMap(columnMap);
-        // ExcelBean<User>  excelBean = excelReader.read(0,User.class);
-        ExcelBean<User> excelBean = excelReader.readByAnnotation(User.class);
-        System.out.println(excelBean.getContentList() == null ? 0: excelBean.getContentList().size());
+//        Map<String, String> columnMap = new HashMap<>();
+//        columnMap.put( "用户编号","id");
+//        columnMap.put( "用户姓名","name");
+//        columnMap.put( "用户年龄","age");
+//        columnMap.put( "用户生日","birthDay");
+//        String path = "C:\\Users\\wdhcxx\\Desktop\\test.xlsx";
+//        ExcelReader excelReader = new ExcelReader(path).setColumnHeaderRow(0);
+//        // ExcelBean<User>  excelBean = excelReader.read(0,columnMap,User.class);
+//        ExcelBean<User> excelBean = excelReader.readByAnnotation(User.class);
+//        System.out.println(excelBean.getContentList() == null ? 0: excelBean.getContentList().size());
+
+        System.out.println(User.class.getTypeName());
+        System.out.println(User.class.getName());
+        System.out.println(User.class.getSimpleName());
     }
 }

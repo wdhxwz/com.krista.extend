@@ -13,6 +13,7 @@
         </xsd:annotation>
         <xsd:complexType>
             <xsd:sequence>
+                <!-- minOccurs = 0 表示可以不需要出现 -->
                 <xsd:choice minOccurs="0" maxOccurs="unbounded">
                     <xsd:element name="error">
                         <xsd:complexType>

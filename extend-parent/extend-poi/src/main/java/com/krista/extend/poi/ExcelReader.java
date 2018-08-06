@@ -1,5 +1,6 @@
 package com.krista.extend.poi;
 
+import com.krista.extend.converter.Converter;
 import com.krista.extend.poi.bean.ExcelBean;
 import com.krista.extend.poi.bean.ExcelSheet;
 import com.krista.extend.poi.bean.SheetColumn;
@@ -26,8 +27,10 @@ public class ExcelReader {
      * 功能描述: 表头行,默认为第一行，-1 表示没有表头行
      */
     private int columnHeaderRow = 0;
+    private Map<String,Converter> fieldConverterMap = new HashMap<>();
 
-    private Map<String, String> columnNameMap = new HashMap<>();
+    // 缓存反射信息，外层Map的key是Type的名称，里层Map的key是字段名称
+    private Map<String,Map<String,Field>> fieldCacheMap = new HashMap<>();
 
     public ExcelReader(String filePath) throws IOException, InvalidFormatException {
         this(new FileInputStream(filePath));
@@ -49,11 +52,11 @@ public class ExcelReader {
     }
 
     /**
-     * 功能描述: 设置表头映射
+     * 功能描述: 设置值转换器映射
      */
-    public ExcelReader setColumnNameMap(Map<String, String> columnNameMap) {
-        AssertUtil.notNull(columnNameMap, "表头映射不能为空");
-        this.columnNameMap = columnNameMap;
+    public ExcelReader setConverterMap(Map<String,Converter> converterMap){
+        AssertUtil.notNull(converterMap, "转换器映射不能为空");
+        this.fieldConverterMap = converterMap;
         return this;
     }
 
@@ -62,8 +65,9 @@ public class ExcelReader {
      * @param sheetIndex
      * @param clz
      */
-    public <T> ExcelBean<T> read(int sheetIndex, Class<T> clz) throws IllegalAccessException, InstantiationException {
+    public <T> ExcelBean<T> read(int sheetIndex,Map<String, String> columnNameMap, Class<T> clz) throws IllegalAccessException, InstantiationException {
         ExcelBean<T> excelBean = new ExcelBean<>();
+        setCache(clz);
 
         // 下标超出了实际范围，会抛异常
         Sheet sheet = workbook.getSheetAt(sheetIndex);
@@ -97,22 +101,24 @@ public class ExcelReader {
 
         // 缓存反射的字段信息
         List<T> list = new ArrayList<>();
-        Map<String,Field> fieldMap = new HashMap<>();
-        for (Field field: clz.getDeclaredFields()) {
-            field.setAccessible(true);
-            fieldMap.put(field.getName(),field);
-        }
+        Map<String,Field> fieldMap = fieldCacheMap.get(clz.getTypeName());
 
         // 读取行数据，转换为对应实体类型
         Row row = null;
-        for (int rowIndex = beginRowIndex; rowIndex < lastRow; rowIndex++) {
+        for (int rowIndex = beginRowIndex; rowIndex <= lastRow; rowIndex++) {
             T entity = clz.newInstance();
             row = sheet.getRow(rowIndex);
             for (Map.Entry<String, Integer> entry : headerMap.entrySet()) {
                 String fieldName = entry.getKey();
                 Integer columnIndex = entry.getValue();
+
+                // 遍历属性集合，为指定属性赋值
                 if(fieldMap.containsKey(fieldName)){
-                    fieldMap.get(fieldName).set(entity, TypeUtil.parse(getCellValue(row.getCell(columnIndex)),fieldMap.get(fieldName).getType()));
+                    fieldMap.get(fieldName).set(entity,
+                            TypeUtil.parse(fieldConverterMap.containsKey(fieldName) ?
+                                            fieldConverterMap.get(fieldName).convert(getCellValue(row.getCell(columnIndex))) :
+                                            getCellValue(row.getCell(columnIndex)),
+                            fieldMap.get(fieldName).getType()));
                 }
             }
             list.add(entity);
@@ -123,23 +129,25 @@ public class ExcelReader {
     }
 
     public <T> ExcelBean<T> readByAnnotation(Class<T> clz) throws InstantiationException, IllegalAccessException {
+        setCache(clz);
         ExcelSheet excelSheet = clz.getAnnotation(ExcelSheet.class);
         if(excelSheet == null){
             throw new IllegalArgumentException("目标类没有ExcelSheet注解");
         }
         String sheetName = excelSheet.name();
 
-        Map<String,Field> fieldMap = new HashMap<>();
-        for (Field field: clz.getDeclaredFields()) {
-            field.setAccessible(true);
-            fieldMap.put(field.getName(),field);
+        Map<String,Field> fieldMap = fieldCacheMap.get(clz.getTypeName());
+
+        // columnNameMap也是可以缓存的
+        Map<String, String> columnNameMap = new HashMap<>();
+        for (Field field: fieldMap.values()) {
             SheetColumn sheetColumn = field.getAnnotation(SheetColumn.class);
             if(sheetColumn != null){
                 columnNameMap.put(sheetColumn.name(),field.getName());
             }
         }
 
-        return read(workbook.getSheetIndex(sheetName),clz);
+        return read(workbook.getSheetIndex(sheetName),columnNameMap,clz);
     }
 
     /**
@@ -153,11 +161,11 @@ public class ExcelReader {
         int lastRow = sheet.getLastRowNum();
         Row row = sheet.getRow(0);
         int lastColumn = row.getLastCellNum();
-        for (int rowIndex = 0; rowIndex < lastRow; rowIndex++) {
+        for (int rowIndex = 0; rowIndex <= lastRow; rowIndex++) {
             row = sheet.getRow(rowIndex);
             List<String> rowData = new ArrayList<>();
             for (int columnIndex = 0; columnIndex < lastColumn; columnIndex++) {
-                rowData.add(getCellValue(row.getCell(columnIndex)));
+                rowData.add(TypeUtil.obj2String(getCellValue(row.getCell(columnIndex))));
             }
             dataList.add(rowData);
         }
@@ -165,11 +173,33 @@ public class ExcelReader {
         return dataList;
     }
 
-    private String getCellValue(Cell cell) {
-        try {
-            return cell.getStringCellValue();
-        } catch (Exception ex) {
-            return cell.toString();
+    // 获取Cell的值,默认获取String类型的值
+    private Object getCellValue(Cell cell) {
+        switch (cell.getCellType()){
+            case Cell.CELL_TYPE_BLANK: cell.getStringCellValue();break;
+            case Cell.CELL_TYPE_STRING: cell.getStringCellValue();break;
+            case Cell.CELL_TYPE_BOOLEAN:cell.getBooleanCellValue();break;
+            case Cell.CELL_TYPE_ERROR: cell.getErrorCellValue();break;
+            case Cell.CELL_TYPE_NUMERIC: cell.getNumericCellValue();break;
+            default:return  cell.toString();
         }
+
+        return cell.toString();
+    }
+
+    // 将类型的的反射信息缓存起来
+    private void setCache(Class<?> clz){
+        String typeName = clz.getTypeName();
+        if(fieldCacheMap.containsKey(typeName)){
+            return;
+        }
+
+        Map<String,Field> fieldMap = new HashMap<>();
+        for (Field field: clz.getDeclaredFields()) {
+            field.setAccessible(true);
+            fieldMap.put(field.getName(),field);
+        }
+
+        fieldCacheMap.put(typeName,fieldMap);
     }
 }
