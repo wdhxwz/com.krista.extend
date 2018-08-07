@@ -11,5 +11,6 @@ public class KristaNamespaceHandler extends NamespaceHandlerSupport {
     @Override
     public void init() {
         registerBeanDefinitionParser("requestLimit",new RequestLimitBeanDefinitionParser());
+        registerBeanDefinitionParser("errorpage",new ErrorPageBeanDefinitionParser());
     }
 }

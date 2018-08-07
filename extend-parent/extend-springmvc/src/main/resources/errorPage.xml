@@ -1,15 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<errorpage xmlns="http://www.krista.com/schema/extend"
+<errorPage xmlns="http://www.krista.com/schema/extend"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-           xsi:schemaLocation="http://www.krista.com/schema/extend http://www.krista.com/schema/krista.xsd">
-    <!--
-        <error url="/" page="/">
-            <exception type="DuowanRuntimeException" statusCode="-1" log="info"/>
-        </error>
-     -->
-    <error url="/" page="/">
+           xsi:schemaLocation="http://www.krista.com/schema/extend
+           http://www.krista.com/schema/extend.xsd">
+    <error url="/" page="/" viewType="json">
         <exception type="PrivilegeException" statusCode="200" log="info"/>
         <exception type="DuowanRuntimeException" statusCode="-1" log="info"/>
     </error>
 
-</errorpage>
+<!--
+    以下是错误处理的Servlet可以访问的请求属性列表，用来分析错误/异常的性质
+
+    1.javax.servlet.error.status_code
+    该属性给出状态码，状态码可被存储，并在存储为 java.lang.Integer 数据类型后可被分析
+
+    2.javax.servlet.error.exception_type
+    该属性给出异常类型的信息，异常类型可被存储，并在存储为 java.lang.Class 数据类型后可被分析。
+
+    3.javax.servlet.error.exception
+    该属性给出异常产生的信息，信息可被存储，并在存储为 java.lang.Throwable 数据类型后可被分析。
+
+    4.avax.servlet.error.message
+    该属性给出确切错误消息的信息，信息可被存储，并在存储为 java.lang.String 数据类型后可被分析。
+
+    5.javax.servlet.error.request_uri
+    该属性给出有关 URL 调用 Servlet 的信息，信息可被存储，并在存储为 java.lang.String 数据类型后可被分析。
+
+    6.javax.servlet.error.servlet_name
+    该属性给出 Servlet 的名称，名称可被存储，并在存储为 java.lang.String 数据类型后可被分析。
+ -->
+
+</errorPage>

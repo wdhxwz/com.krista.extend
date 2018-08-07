@@ -7,6 +7,7 @@
             attributeFormDefault="unqualified">
     <xsd:import namespace="http://www.springframework.org/schema/beans" />
 
+    <!-- 访问限制 -->
     <xsd:element name="requestLimit">
         <xsd:annotation>
             <xsd:documentation>请求限制配置</xsd:documentation>
@@ -32,7 +33,8 @@
         </xsd:complexType>
     </xsd:element>
 
-    <xsd:element name="errorpage">
+    <!-- 错误页面配置 -->
+    <xsd:element name="errorPage">
         <xsd:annotation>
             <xsd:documentation>错误页面配置</xsd:documentation>
         </xsd:annotation>
@@ -47,7 +49,6 @@
                                         <xsd:complexType>
                                             <xsd:attribute name="type" type="xsd:string" use="required" />
                                             <xsd:attribute name="statusCode" type="xsd:int" use="required" />
-
                                             <xsd:attribute name="log" default="error">
                                                 <xsd:annotation>
                                                     <xsd:documentation><![CDATA[
@@ -56,8 +57,6 @@
                                                 </xsd:annotation>
                                                 <xsd:simpleType>
                                                     <xsd:restriction base="xsd:NMTOKEN">
-                                                        <xsd:enumeration value="false" />
-                                                        <xsd:enumeration value="true" />
                                                         <xsd:enumeration value="debug" />
                                                         <xsd:enumeration value="info" />
                                                         <xsd:enumeration value="warn" />
@@ -72,6 +71,19 @@
                             <xsd:attribute name="url" type="xsd:string" use="required" />
                             <xsd:attribute name="page" type="xsd:string" />
                             <xsd:attribute name="comment" type="xsd:string" />
+                            <xsd:attribute name="viewType" default="page">
+                                <xsd:annotation>
+                                    <![CDATA[
+
+															]]>
+                                </xsd:annotation>
+                                <xsd:simpleType>
+                                    <xsd:restriction base="xsd:NMTOKEN">
+                                        <xsd:enumeration value="page"/>
+                                        <xsd:enumeration value="json"/>
+                                    </xsd:restriction>
+                                </xsd:simpleType>
+                            </xsd:attribute>
                         </xsd:complexType>
                     </xsd:element>
                 </xsd:choice>
