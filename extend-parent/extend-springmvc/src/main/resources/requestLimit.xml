@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<requestLimit xmlns="http://www.krista.com/schema/extend"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.krista.com/schema/extend
+           http://www.krista.com/schema/extend.xsd">
+<!--    <limit frequency="10" minutes="1">
+        <url>/index.do</url>
+        <url>/user/get.do</url>
+    </limit>
+
+    <limit frequency="50" minutes="1">
+        <url>/userCenter/info.do</url>
+    </limit>-->
+</requestLimit>

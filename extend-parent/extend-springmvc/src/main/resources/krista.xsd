@@ -15,39 +15,16 @@
             <xsd:sequence>
                 <!-- minOccurs = 0 表示可以不需要出现 -->
                 <xsd:choice minOccurs="0" maxOccurs="unbounded">
-                    <xsd:element name="error">
+                    <xsd:element name="limit">
                         <xsd:complexType>
                             <xsd:sequence>
                                 <xsd:choice minOccurs="0" maxOccurs="unbounded">
-                                    <xsd:element name="exception">
-                                        <xsd:complexType>
-                                            <xsd:attribute name="type" type="xsd:string" use="required" />
-                                            <xsd:attribute name="statusCode" type="xsd:int" use="required" />
-
-                                            <xsd:attribute name="log" default="error">
-                                                <xsd:annotation>
-                                                    <xsd:documentation><![CDATA[
-
-															]]></xsd:documentation>
-                                                </xsd:annotation>
-                                                <xsd:simpleType>
-                                                    <xsd:restriction base="xsd:NMTOKEN">
-                                                        <xsd:enumeration value="false" />
-                                                        <xsd:enumeration value="true" />
-                                                        <xsd:enumeration value="debug" />
-                                                        <xsd:enumeration value="info" />
-                                                        <xsd:enumeration value="warn" />
-                                                        <xsd:enumeration value="error" />
-                                                    </xsd:restriction>
-                                                </xsd:simpleType>
-                                            </xsd:attribute>
-                                        </xsd:complexType>
-                                    </xsd:element>
+                                    <xsd:element name="url" type="xsd:string"/>
                                 </xsd:choice>
                             </xsd:sequence>
-                            <xsd:attribute name="url" type="xsd:string" use="required" />
-                            <xsd:attribute name="page" type="xsd:string" />
-                            <xsd:attribute name="comment" type="xsd:string" />
+                            <xsd:attribute name="frequency" type="xsd:int" use="required"/>
+                            <xsd:attribute name="minutes" type="xsd:int" use="required"/>
+                            <xsd:attribute name="comment" type="xsd:string"/>
                         </xsd:complexType>
                     </xsd:element>
                 </xsd:choice>

@@ -10,6 +10,6 @@ import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 public class KristaNamespaceHandler extends NamespaceHandlerSupport {
     @Override
     public void init() {
-
+        registerBeanDefinitionParser("requestLimit",new RequestLimitBeanDefinitionParser());
     }
 }
