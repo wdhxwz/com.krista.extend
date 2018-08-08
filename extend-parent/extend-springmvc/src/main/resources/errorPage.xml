@@ -20,7 +20,7 @@
     3.javax.servlet.error.exception
     该属性给出异常产生的信息，信息可被存储，并在存储为 java.lang.Throwable 数据类型后可被分析。
 
-    4.avax.servlet.error.message
+    4.javax.servlet.error.message
     该属性给出确切错误消息的信息，信息可被存储，并在存储为 java.lang.String 数据类型后可被分析。
 
     5.javax.servlet.error.request_uri

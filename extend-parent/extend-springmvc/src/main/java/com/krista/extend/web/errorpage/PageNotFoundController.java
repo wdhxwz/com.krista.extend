@@ -1,6 +1,8 @@
 package com.krista.extend.web.errorpage;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * @Auther: dw_wanghonghong
@@ -10,4 +12,8 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class PageNotFoundController {
 
+    @RequestMapping(value = "404.do")
+    public ModelAndView pageNotFound(){
+        return null;
+    }
 }
