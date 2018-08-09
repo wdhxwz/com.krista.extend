@@ -38,10 +38,12 @@ public class SysLoginController extends AbstractController {
      * 登录
      */
     @PostMapping("/login")
+    @SysLogger("用户登录")
     public Result login(@Valid @RequestBody LoginDto loginDto) {
         log.info("user login: {}", loginDto.getUsername());
         // 用户信息
         SysUser user = sysUserService.queryByUserName(loginDto.getUsername());
+
         // 账号不存在、密码错误
         if (user == null || !user.getPassword().equals(new Sha256Hash(loginDto.getPassword(), user.getSalt()).toHex())) {
             return ResultUtil.failure("账号或密码不正确");

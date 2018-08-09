@@ -101,6 +101,10 @@ public class SysUserServiceImpl extends AbstractService<SysUser> implements SysU
         SysUser user = new SysUser();
         user.setUsername(userName);
         List<SysUser> userList = sysUserMapper.select(user);
+        if(userList == null || userList.isEmpty()){
+            return null;
+        }
+
         return userList.get(0);
     }
 

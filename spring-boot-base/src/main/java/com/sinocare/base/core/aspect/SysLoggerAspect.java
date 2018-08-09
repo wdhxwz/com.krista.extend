@@ -51,6 +51,7 @@ public class SysLoggerAspect {
         return result;
     }
 
+    // TODO 这里搞成异步执行
     private void saveSysLog(ProceedingJoinPoint joinPoint, long time) {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
@@ -70,8 +71,10 @@ public class SysLoggerAspect {
         // 请求的参数
         Object[] args = joinPoint.getArgs();
         try {
-            String params = JSON.toJSONString(args[0]);
-            sysLog.setParams(params);
+            if(args.length > 0) {
+                String params = JSON.toJSONString(args[0]);
+                sysLog.setParams(params);
+            }
         } catch (Exception e) {
             log.error("@SysLogger toJSONString error {}", e);
         }
