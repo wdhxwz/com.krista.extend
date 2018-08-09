@@ -69,7 +69,7 @@ public class ExceptionHandle {
     // 参数错误
     @ExceptionHandler({HttpMessageNotReadableException.class})
     public Result requestNotReadable(HttpMessageNotReadableException ex){
-        ex.printStackTrace();
+        log.error(ex.getMessage(),ex);
         return ResultUtil.failure(ResultCode.WEB_PARAMETER_ERROR);
     }
 
