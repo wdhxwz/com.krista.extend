@@ -9,6 +9,7 @@ import com.sinocare.base.core.result.ResultCode;
 import com.sinocare.base.core.result.ResultUtil;
 import com.sinocare.base.dto.common.PageVo;
 import com.sinocare.base.dto.user.PasswordDto;
+import com.sinocare.base.dto.user.UserPageVo;
 import com.sinocare.base.po.sys.SysUser;
 import com.sinocare.base.service.sys.SysUserRoleService;
 import com.sinocare.base.service.sys.SysUserService;
@@ -16,10 +17,12 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import tk.mybatis.mapper.entity.Condition;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -85,9 +88,17 @@ public class SysUserController extends AbstractController {
 
     @PostMapping("/list")
     @RequiresPermissions("sys:user:list")
-    public Result list(@RequestBody PageVo pageVo) {
-        PageHelper.startPage(pageVo.getPage(), pageVo.getSize());
-        List<SysUser> list = sysUserService.findAll();
+    public Result list(@RequestBody UserPageVo userPageVo) {
+        PageHelper.startPage(userPageVo.getPage(), userPageVo.getSize());
+
+        // 构造查询条件
+        Condition condition = new Condition(SysUser.class);
+        if(StringUtils.isNotEmpty(userPageVo.getUserName())){
+            condition.createCriteria().andLike("username","%" + userPageVo.getUserName() + "%");
+        }
+
+        List<SysUser> list = sysUserService.findByCondition(condition);
+                // sysUserService.findAll();
         PageInfo pageInfo = new PageInfo(list);
         return ResultUtil.success(pageInfo);
     }

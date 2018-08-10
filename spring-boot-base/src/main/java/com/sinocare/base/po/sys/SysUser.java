@@ -65,7 +65,7 @@ public class SysUser {
     /**
      * 角色ID列表
      */
-    @Transient
+    // @Transient
     private List<Long> roleIdList;
 
     /**

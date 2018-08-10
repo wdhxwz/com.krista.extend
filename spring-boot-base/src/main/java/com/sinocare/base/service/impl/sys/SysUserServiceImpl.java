@@ -4,6 +4,7 @@ import com.sinocare.base.core.AbstractService;
 import com.sinocare.base.core.exception.ServiceException;
 import com.sinocare.base.core.result.ResultCode;
 import com.sinocare.base.core.util.Constant;
+import com.sinocare.base.core.util.MD5Utils;
 import com.sinocare.base.dao.sys.SysUserMapper;
 import com.sinocare.base.po.sys.SysUser;
 import com.sinocare.base.service.sys.SysRoleService;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.crypto.hash.Md5Hash;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,7 +48,7 @@ public class SysUserServiceImpl extends AbstractService<SysUser> implements SysU
     public void add(SysUser user) {
         //sha256加密
         String salt = RandomStringUtils.randomAlphanumeric(20);
-        user.setPassword(new Sha256Hash(user.getPassword(), salt).toHex());
+        user.setPassword(new Sha256Hash(MD5Utils.getMD5Code(user.getPassword()), salt).toHex());
         user.setSalt(salt);
         user.setCreateTime(new Date());
         sysUserMapper.insertSelective(user);
