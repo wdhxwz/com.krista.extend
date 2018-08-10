@@ -27,8 +27,6 @@ import java.io.IOException;
 @Slf4j
 public class OAuth2Filter extends AuthenticatingFilter {
 
-    private static Logger log  = LoggerFactory.getLogger(OAuth2Filter.class);
-
     @Override
     protected AuthenticationToken createToken(ServletRequest request, ServletResponse response) throws Exception {
         //获取请求token
@@ -79,7 +77,7 @@ public class OAuth2Filter extends AuthenticatingFilter {
         try {
             //处理登录失败的异常
             Throwable throwable = e.getCause() == null ? e : e.getCause();
-            Result result = ResultUtil.failure(throwable.getMessage());
+            Result result = ResultUtil.failure(ResultCode.HTTP_NOT_AUTHORIZATION.getCode(),throwable.getMessage());
             String json = JSON.toJSONString(result);
             httpResponse.getWriter().print(json);
             log.info("login failure :{}", throwable.getMessage());

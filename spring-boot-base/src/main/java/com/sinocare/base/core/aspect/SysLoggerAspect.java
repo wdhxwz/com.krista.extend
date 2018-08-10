@@ -71,7 +71,7 @@ public class SysLoggerAspect {
         // 请求的参数
         Object[] args = joinPoint.getArgs();
         try {
-            if(args.length > 0) {
+            if (args.length > 0) {
                 String params = JSON.toJSONString(args[0]);
                 sysLog.setParams(params);
             }
@@ -86,8 +86,14 @@ public class SysLoggerAspect {
 
         // 用户名
         try {
-            String username = ((SysUser) SecurityUtils.getSubject().getPrincipal()).getUsername();
-            sysLog.setUsername(username);
+            // 登录失效时获取到的用户信息是null
+            SysUser sysUser = (SysUser) SecurityUtils.getSubject().getPrincipal();
+            if (sysUser != null) {
+                String username = sysUser.getUsername();
+                sysLog.setUsername(username);
+            } else {
+                sysLog.setUsername("获取不到用户信息");
+            }
         } catch (Exception e) {
             log.error("@SysLogger get username error {}", e);
         }
