@@ -1,5 +1,6 @@
 package com.sinocare.base.web.sys;
 
+import cn.hutool.core.convert.impl.BeanConverter;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.sinocare.base.core.annotation.SysLogger;
@@ -83,6 +84,8 @@ public class SysUserController extends AbstractController {
     @RequiresPermissions("sys:user:item")
     public Result item(@PathVariable("userId") Long userId) {
         SysUser sysUser = sysUserService.findById(userId);
+
+
         return ResultUtil.success(sysUser);
     }
 
