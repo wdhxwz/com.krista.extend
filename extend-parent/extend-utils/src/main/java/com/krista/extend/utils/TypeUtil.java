@@ -91,6 +91,9 @@ public class TypeUtil {
 
     public static Date obj2Date(Object value,String dateFormat) throws ParseException {
         AssertUtil.notNull(value,"值不能为空");
+        if(TypeUtil.isDate(value.getClass())){
+            return (Date) value;
+        }
 
         try {
             return new Date(obj2Long(value));

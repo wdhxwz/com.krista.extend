@@ -176,15 +176,18 @@ public class ExcelReader {
     // 获取Cell的值,默认获取String类型的值
     private Object getCellValue(Cell cell) {
         switch (cell.getCellType()){
-            case Cell.CELL_TYPE_BLANK: cell.getStringCellValue();break;
-            case Cell.CELL_TYPE_STRING: cell.getStringCellValue();break;
-            case Cell.CELL_TYPE_BOOLEAN:cell.getBooleanCellValue();break;
-            case Cell.CELL_TYPE_ERROR: cell.getErrorCellValue();break;
-            case Cell.CELL_TYPE_NUMERIC: cell.getNumericCellValue();break;
+            case Cell.CELL_TYPE_BLANK: return cell.getStringCellValue();
+            case Cell.CELL_TYPE_STRING: return cell.getStringCellValue();
+            case Cell.CELL_TYPE_BOOLEAN: return cell.getBooleanCellValue();
+            case Cell.CELL_TYPE_ERROR: return cell.getErrorCellValue();
+            case Cell.CELL_TYPE_NUMERIC:{
+                if(cell.getDateCellValue() != null){
+                    return cell.getDateCellValue();
+                }
+                return cell.getNumericCellValue();
+            }
             default:return  cell.toString();
         }
-
-        return cell.toString();
     }
 
     // 将类型的的反射信息缓存起来
