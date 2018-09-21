@@ -6,6 +6,7 @@ import com.krista.extend.poi.bean.ExcelSheet;
 import com.krista.extend.poi.bean.SheetColumn;
 import com.krista.extend.utils.AssertUtil;
 import com.krista.extend.utils.TypeUtil;
+import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 
@@ -181,7 +182,7 @@ public class ExcelReader {
             case Cell.CELL_TYPE_BOOLEAN: return cell.getBooleanCellValue();
             case Cell.CELL_TYPE_ERROR: return cell.getErrorCellValue();
             case Cell.CELL_TYPE_NUMERIC:{
-                if(cell.getDateCellValue() != null){
+                if(HSSFDateUtil.isCellDateFormatted(cell)){
                     return cell.getDateCellValue();
                 }
                 return cell.getNumericCellValue();
