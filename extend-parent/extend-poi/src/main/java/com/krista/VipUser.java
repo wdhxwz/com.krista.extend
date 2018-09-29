@@ -17,9 +17,20 @@ public class VipUser {
     private Long yyuid;
     @SheetColumn(name = "viplevel")
     private Integer vipLevel;
-    @SheetColumn(name = "_c2")
+    @SheetColumn(name = "createtime")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
+
+    public String getPassport() {
+        return passport;
+    }
+
+    public void setPassport(String passport) {
+        this.passport = passport;
+    }
+
+    @SheetColumn
+    private String passport;
 
     public Long getYyuid() {
         return yyuid;

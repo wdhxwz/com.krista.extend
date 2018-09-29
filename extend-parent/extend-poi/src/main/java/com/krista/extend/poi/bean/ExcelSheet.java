@@ -11,6 +11,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface ExcelSheet {
-    String name() default "sheet1";
-    String value() default "sheet1";
+    String name() default "";
+
+    String value() default "";
 }

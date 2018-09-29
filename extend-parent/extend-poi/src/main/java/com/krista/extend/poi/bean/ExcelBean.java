@@ -20,7 +20,7 @@ public class ExcelBean<T> {
     /**
      * 功能描述:列标题Map,key为字段名称，value为列标题
      */
-    private Map<String,String> columnNameMap;
+    private Map<String, String> columnNameMap;
 
     public List<T> getContentList() {
         return contentList;

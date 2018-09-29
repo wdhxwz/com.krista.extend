@@ -3,6 +3,7 @@ package com.krista.extend.poi;
 import com.krista.extend.poi.bean.ExcelBean;
 import com.krista.extend.poi.bean.ExcelSheet;
 import com.krista.extend.poi.bean.SheetColumn;
+import com.krista.extend.utils.StringUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -30,8 +31,8 @@ public class ExcelWriter {
     private DecimalFormat decimalFormat;
     private String numberFormat = "0.00";
     private boolean isXLSX = true;
-    private Map<String,SimpleDateFormat> dateFormatMap = new HashMap<>();
-    private Map<String,DecimalFormat> numberFormatMap = new HashMap<>();
+    private Map<String, SimpleDateFormat> dateFormatMap = new HashMap<>();
+    private Map<String, DecimalFormat> numberFormatMap = new HashMap<>();
 
     // 两种字体样式，一种正常样式，一种是粗体样式
     private Font NormalFont;
@@ -150,7 +151,7 @@ public class ExcelWriter {
             checkFileAndCreateDir(filePath);
             return export(columnNameMap, contentList, new FileOutputStream(filePath));
         } catch (FileNotFoundException e) {
-            logger.warn(e.getMessage(),e);
+            logger.warn(e.getMessage(), e);
 
             return RESULT_FAIL;
         }
@@ -168,7 +169,7 @@ public class ExcelWriter {
             return export(excelBeans, outputStream);
         } catch (Exception ex) {
             rs = RESULT_FAIL;
-            logger.warn(ex.getMessage(),ex);
+            logger.warn(ex.getMessage(), ex);
         }
 
         return rs;
@@ -189,7 +190,7 @@ public class ExcelWriter {
         try {
             workbook.write(outputStream);
         } catch (IOException e) {
-            logger.warn(e.getMessage(),e);
+            logger.warn(e.getMessage(), e);
             rs = RESULT_FAIL;
         }
 
@@ -243,9 +244,9 @@ public class ExcelWriter {
                 cell = row.createCell(columnIndexMap.get(key));
                 cell.setCellStyle(contentCenterStyle);
                 try {
-                    setCellValue(cell, field.getType(), field.get(content),field.getName());
+                    setCellValue(cell, field.getType(), field.get(content), field.getName());
                 } catch (IllegalAccessException e) {
-                   logger.warn(e.getMessage(),e);
+                    logger.warn(e.getMessage(), e);
                 }
             }
             rowIndex++;
@@ -257,17 +258,17 @@ public class ExcelWriter {
 ////        }
     }
 
-    private void setCellValue(Cell cell, Class clz, Object value,String fieldName) {
+    private void setCellValue(Cell cell, Class clz, Object value, String fieldName) {
         if (Date.class.equals(clz)) {
-            if(dateFormatMap.containsKey(fieldName)){
+            if (dateFormatMap.containsKey(fieldName)) {
                 cell.setCellValue(dateFormatMap.get(fieldName).format(value));
-            }else{
+            } else {
                 cell.setCellValue(dateFormat.format(value));
             }
         } else if (Number.class.equals(clz) || Integer.class.equals(clz)) {
-            if(numberFormatMap.containsKey(fieldName)){
+            if (numberFormatMap.containsKey(fieldName)) {
                 cell.setCellValue(Double.parseDouble(numberFormatMap.get(fieldName).format(value)));
-            }else {
+            } else {
                 cell.setCellValue(Double.parseDouble(decimalFormat.format(value)));
             }
         } else {
@@ -289,7 +290,7 @@ public class ExcelWriter {
             return exportByAnnotation(new FileOutputStream(filePath), sheets);
         } catch (Exception ex) {
             rs = RESULT_FAIL;
-            logger.warn(ex.getMessage(),ex);
+            logger.warn(ex.getMessage(), ex);
         }
 
         return rs;
@@ -299,28 +300,36 @@ public class ExcelWriter {
      * 功能描述: 根据注解导出Excel
      */
     public final <T> boolean exportByAnnotation(OutputStream outputStream, List<T> sheets) {
-        if(sheets == null || sheets.isEmpty()){
+        if (sheets == null || sheets.isEmpty()) {
             return RESULT_FAIL;
         }
 
         Class<?> clz = sheets.get(0).getClass();
         ExcelSheet excelSheet = clz.getAnnotation(ExcelSheet.class);
-        if(excelSheet == null){
+        if (excelSheet == null) {
             throw new IllegalArgumentException("实体类没有ExcelSheet注解");
         }
         List<ExcelBean> excelBeans = new ArrayList<>();
         ExcelBean excelBean = new ExcelBean();
-        excelBean.setSheetName(excelSheet.name());
+        if (StringUtil.isEmpty(excelSheet.name())) {
+            excelBean.setSheetName(clz.getSimpleName());
+        } else {
+            excelBean.setSheetName(excelSheet.name());
+        }
         excelBean.setContentList(sheets);
 
         Field[] fields = clz.getDeclaredFields();
-        LinkedHashMap<String,String> map = new LinkedHashMap<>();
-        for(Field field : fields){
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
+        for (Field field : fields) {
             SheetColumn sheetColumn = field.getAnnotation(SheetColumn.class);
-            if(sheetColumn == null){
+            if (sheetColumn == null) {
                 continue;
             }
-            map.put(field.getName(),sheetColumn.name());
+            if (StringUtil.isEmpty(sheetColumn.name())) {
+                map.put(field.getName(), field.getName());
+            } else {
+                map.put(field.getName(), sheetColumn.name());
+            }
             if (sheetColumn.timeFormat().length() > 0) {
                 dateFormatMap.put(field.getName(), new SimpleDateFormat(sheetColumn.timeFormat()));
             }
@@ -331,7 +340,7 @@ public class ExcelWriter {
         excelBean.setColumnNameMap(map);
         excelBeans.add(excelBean);
 
-        return export(excelBeans,outputStream);
+        return export(excelBeans, outputStream);
     }
 
     private void checkFileAndCreateDir(String filePath) {

@@ -11,8 +11,11 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface SheetColumn {
-    String name() default "column1";
-    String value() default "column1";
+    String name() default "";
+
+    String value() default "";
+
     String timeFormat() default "";
+
     String numberFormat() default "";
 }
