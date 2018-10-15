@@ -43,7 +43,7 @@ public class JsonUtil {
     /**
      * 获取json一个更节点的值，如果出现多个key，返回最后一个<br/>
      * 该方法存在bug，会带双引号，请使用
-     * {@linkplain com.krista.extend.utils.JsonUtil.getNode}方法
+     * {@linkplain com.krista.extend.utils.JsonUtil#getNode(String, String)}}方法
      *
      * @param jsonString
      * @param key
