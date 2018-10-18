@@ -18,6 +18,7 @@
         <commmon.langs.version>3.5</commmon.langs.version>
         <commons.collections.version>3.2.1</commons.collections.version>
         <servlet.version>3.1.0</servlet.version>
+        <guava.version>26.0-jre</guava.version>
     </properties>
 
     <dependencies>
@@ -35,6 +36,11 @@
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <version>${servlet.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
         </dependency>
     </dependencies>
 
