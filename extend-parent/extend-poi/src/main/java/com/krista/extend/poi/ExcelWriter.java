@@ -16,7 +16,7 @@ import java.text.*;
 import java.util.*;
 
 /**
- * @Auther: dw_wanghonghong
+ * @Author: dw_wanghonghong
  * @Date: 2018/7/17 14:56
  * @Description: POI工具类
  */
@@ -34,20 +34,30 @@ public class ExcelWriter {
     private Map<String, SimpleDateFormat> dateFormatMap = new HashMap<>();
     private Map<String, DecimalFormat> numberFormatMap = new HashMap<>();
 
-    // 两种字体样式，一种正常样式，一种是粗体样式
+    /**
+    * 两种字体样式，一种正常样式，一种是粗体样式
+    */
     private Font NormalFont;
     private Font BoldFont;
 
-    // 标题（列头）样式
+    /**
+    * 标题（列头）样式
+    */
     private CellStyle titleStyle;
 
-    // 正文样式1：居中
+    /**
+    * 正文样式1：居中
+    */
     private CellStyle contentCenterStyle;
 
-    // 正文样式：右对齐
+    /**
+    * 正文样式：右对齐
+    */
     private CellStyle contentRightStyle;
 
-    // 正文样式：左对齐
+    /**
+    * 正文样式：左对齐
+    */
     private CellStyle contentLeftStyle;
 
     private Workbook workbook;
