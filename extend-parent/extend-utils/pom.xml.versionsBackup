@@ -5,46 +5,42 @@
     <parent>
         <artifactId>extend-parent</artifactId>
         <groupId>com.krista</groupId>
-        <version>1.0.2-SNAPSHOT</version>
+        <version>1.0.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
-    <artifactId>extend-log4j</artifactId>
-    <name>extend-log4j</name>
+    <artifactId>extend-utils</artifactId>
+    <name>extend-utils</name>
     <url>http://www.krista.com</url>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <slf4j.version>1.7.21</slf4j.version>
+        <commmon.langs.version>3.5</commmon.langs.version>
+        <commons.collections.version>3.2.1</commons.collections.version>
         <servlet.version>3.1.0</servlet.version>
+        <guava.version>26.0-jre</guava.version>
     </properties>
 
     <dependencies>
-        <!-- slf4j -->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commmon.langs.version}</version>
         </dependency>
-        <!-- slf4j 与log4j适配 -->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>${slf4j.version}</version>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>${commons.collections.version}</version>
         </dependency>
-
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <version>${servlet.version}</version>
         </dependency>
-
         <dependency>
-            <groupId>com.krista</groupId>
-            <artifactId>extend-utils</artifactId>
-            <version>${project.version}</version>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
         </dependency>
     </dependencies>
 
