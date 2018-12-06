@@ -2,6 +2,7 @@ package com.krista.extend.utils;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
+import java.util.Map;
 import java.util.concurrent.*;
 
 /**
@@ -11,8 +12,16 @@ import java.util.concurrent.*;
  * @date 2018/10/18 17:41
  */
 public class ThreadPoolUtil {
+    private static final Map<String, ExecutorService> THREAD_POOL_MAP = new ConcurrentHashMap<>();
+    private static final Object LOCKER = new Object();
+    private static final String DEFAULT_MODULE_NAME = "default";
     private static RejectedExecutionHandler defaultHandler =
             new ThreadPoolExecutor.AbortPolicy();
+
+    /**
+     * 默认线程池大小：核数 + 1
+     */
+    public static final Integer DEFAULT_CORE_POOL_SIZE = Runtime.getRuntime().availableProcessors() + 1;
 
     /**
      * 获取线程池对象
@@ -64,5 +73,30 @@ public class ThreadPoolUtil {
     public static ExecutorService newSingleThreadExecutor(String threadNameFormat) {
         return newFixedThreadPool(threadNameFormat, 1);
     }
-}
 
+    public static void submit(Runnable thread) {
+        ThreadPoolUtil.submit(thread, DEFAULT_MODULE_NAME);
+    }
+
+    /**
+     * submit 提交一个任务给线程池执行
+     *
+     * @param thread     线程任务
+     * @param moduleName 模块名称,用户构造线程池名字
+     * @return void
+     * @author dw_wangdonghong
+     * @date 2018/12/5 10:28
+     */
+    public static void submit(Runnable thread, String moduleName) {
+        ExecutorService threadPool = THREAD_POOL_MAP.get(moduleName);
+        if (threadPool == null) {
+            synchronized (LOCKER) {
+                String threadNameFormat = moduleName + "-pool-%d";
+                threadPool = ThreadPoolUtil
+                        .newFixedThreadPool(threadNameFormat, ThreadPoolUtil.DEFAULT_CORE_POOL_SIZE);
+                THREAD_POOL_MAP.put(moduleName, threadPool);
+            }
+        }
+        threadPool.submit(thread);
+    }
+}
