@@ -74,8 +74,8 @@ public class ThreadPoolUtil {
         return newFixedThreadPool(threadNameFormat, 1);
     }
 
-    public static void submit(Runnable thread) {
-        ThreadPoolUtil.submit(thread, DEFAULT_MODULE_NAME);
+    public static void addTask(Runnable thread) {
+        ThreadPoolUtil.addTask(thread, DEFAULT_MODULE_NAME);
     }
 
     /**
@@ -87,7 +87,7 @@ public class ThreadPoolUtil {
      * @author dw_wangdonghong
      * @date 2018/12/5 10:28
      */
-    public static void submit(Runnable thread, String moduleName) {
+    public static void addTask(Runnable thread, String moduleName) {
         ExecutorService threadPool = THREAD_POOL_MAP.get(moduleName);
         if (threadPool == null) {
             synchronized (LOCKER) {
