@@ -5,7 +5,7 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
       driver-class-name: com.mysql.jdbc.Driver
-      url: jdbc:mysql://47.106.92.155/springBootBase?useSSL=false&useUnicode=true&characterEncoding=UTF-8
+      url: jdbc:mysql://mysql.krista.com:3306/springBootBase?useSSL=false&useUnicode=true&characterEncoding=UTF-8
       username: root
       password: 1q2w#E$R
       initial-size: 10
