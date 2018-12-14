@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 /**
@@ -39,7 +40,7 @@ public class SysLoginController extends AbstractController {
      */
     @PostMapping("/login")
     @SysLogger("用户登录")
-    public Result login(@Valid @RequestBody LoginDto loginDto) {
+    public Result login(@Valid @RequestBody LoginDto loginDto, HttpServletRequest request) {
         log.info("user login: {}", loginDto.getUsername());
         // 用户信息
         SysUser user = sysUserService.queryByUserName(loginDto.getUsername());
@@ -54,6 +55,10 @@ public class SysLoginController extends AbstractController {
         }
         // 生成token，并保存到数据库
         SysUserToken userToken = sysUserTokenService.createToken(user.getUserId());
+
+        // 写用户名进session
+        request.getSession().setAttribute("krista.username", user.getUsername());
+
         return ResultUtil.success(userToken);
     }
 
