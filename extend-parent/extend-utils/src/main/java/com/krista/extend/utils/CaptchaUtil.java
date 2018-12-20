@@ -15,7 +15,7 @@ import java.util.Random;
  * @since 2018/12/20 19:49
  */
 public class CaptchaUtil {
-    private CaptchaUtil() {
+    public CaptchaUtil() {
 
     }
 
@@ -34,7 +34,7 @@ public class CaptchaUtil {
     /**
      * 图片高
      */
-    private int height = 25;
+    private int height = 33;
     /**
      * 干扰线数量
      */
@@ -99,7 +99,7 @@ public class CaptchaUtil {
         String rand = String.valueOf(getRandomString(random.nextInt(RANDOM_STRS
                 .length())));
         g.translate(random.nextInt(3), random.nextInt(3));
-        g.drawString(rand, 13 * i, 16);
+        g.drawString(rand, 13 * i, 18);
         return rand;
     }
 
