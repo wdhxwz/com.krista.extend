@@ -15,6 +15,13 @@ import java.util.Random;
  * @since 2018/12/20 19:49
  */
 public class CaptchaUtil {
+    public CaptchaUtil(int width, int height, int lineNum, int strNum) {
+        this.width = width;
+        this.height = height;
+        this.lineNum = lineNum;
+        this.strNum = strNum;
+    }
+
     public CaptchaUtil() {
 
     }
@@ -43,6 +50,25 @@ public class CaptchaUtil {
      * 随机产生字符数量
      */
     private int strNum = 4;
+    /**
+     * x轴坐标
+     */
+    private int x = 13;
+    /**
+     * y轴坐标
+     */
+    private int y = 20;
+
+    public CaptchaUtil setX(int x) {
+        this.x = x;
+        return this;
+    }
+
+    public CaptchaUtil setY(int y) {
+        this.y = y;
+
+        return this;
+    }
 
     /**
      * 生成随机图片
@@ -62,15 +88,15 @@ public class CaptchaUtil {
 
         // 绘制干扰线
         for (int i = 0; i <= lineNum; i++) {
-            drowLine(g);
+            drawLine(g);
         }
         // 绘制随机字符
         g.setFont(new Font(FONT_NAME, Font.ROMAN_BASELINE, FONT_SIZE));
         for (int i = 1; i <= strNum; i++) {
-            randomCode.append(drowString(g, i));
+            randomCode.append(drawString(g, i));
         }
         g.dispose();
-        
+
         return image;
     }
 
@@ -93,20 +119,21 @@ public class CaptchaUtil {
     /**
      * 绘制字符串
      */
-    private String drowString(Graphics g, int i) {
+    private String drawString(Graphics g, int i) {
         g.setColor(new Color(random.nextInt(101), random.nextInt(111), random
                 .nextInt(121)));
-        String rand = String.valueOf(getRandomString(random.nextInt(RANDOM_STRS
-                .length())));
+        String rand = getRandomString(random.nextInt(RANDOM_STRS
+                .length()));
         g.translate(random.nextInt(3), random.nextInt(3));
-        g.drawString(rand, 13 * i, 18);
+        g.drawString(rand, x * i, y);
+
         return rand;
     }
 
     /**
      * 绘制干扰线
      */
-    private void drowLine(Graphics g) {
+    private void drawLine(Graphics g) {
         int x = random.nextInt(width);
         int y = random.nextInt(height);
         int x0 = random.nextInt(16);
