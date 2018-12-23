@@ -21,6 +21,8 @@ public class JsonResponse<T> {
 
     public JsonResponse(T data) {
         this.data = data;
+        this.code = successCode;
+        this.message = successMessage;
     }
 
     public JsonResponse(Integer code, String message) {
