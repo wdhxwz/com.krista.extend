@@ -31,6 +31,16 @@ public class MenuVo {
      */
     private List<MenuVo> children;
 
+    public MenuVo() {
+    }
+
+    public MenuVo(Long id, String name, String path, String icon) {
+        this.id = id;
+        this.name = name;
+        this.path = path;
+        this.icon = icon;
+    }
+
     public Long getId() {
         return id;
     }
