@@ -12,6 +12,10 @@ import org.slf4j.LoggerFactory;
  */
 public class RetryExecutor {
     private static Logger logger = LoggerFactory.getLogger(RetryExecutor.class);
+    /**
+     * 默认执行次数
+     */
+    public static final int DEFAULT_RETRY_TIMES = 3;
 
     /**
      * 重试执行
