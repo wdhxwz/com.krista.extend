@@ -1,17 +1,19 @@
 package com.krista.extend.utils;
 
-import java.util.List;
-
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.List;
 
 /**
  * @author wdhcxx
- *
  */
 public class JsonUtil {
+    private JsonUtil() {
 
-    private final static String NULL_STRING = "null";
-    private final static String FLAG = "\"";
+    }
+
+    private static final String NULL_STRING = "null";
+    private static final String FLAG = "\"";
 
     private static JsonMapper jsonMapper = JsonMapper.getDefault();
 
@@ -43,7 +45,7 @@ public class JsonUtil {
     /**
      * 获取json一个更节点的值，如果出现多个key，返回最后一个<br/>
      * 该方法存在bug，会带双引号，请使用
-     * {@linkplain com.krista.extend.utils.JsonUtil#getNode(String, String)}}方法
+     * {@link com.krista.extend.utils.JsonUtil#getNode(String, String)}}方法
      *
      * @param jsonString
      * @param key
@@ -51,7 +53,7 @@ public class JsonUtil {
      */
     @Deprecated
     public static String getString(String jsonString, String key) {
-        if (jsonString == null || jsonString.trim().equals("")) {
+        if (jsonString == null || "".equals(jsonString.trim())) {
             return null;
         }
         return jsonMapper.getBykey(jsonString, key);
@@ -65,7 +67,7 @@ public class JsonUtil {
      * @return
      */
     public static String getNode(String jsonString, String key) {
-        if (jsonString == null || jsonString.trim().equals("")) {
+        if (jsonString == null || "".equals(jsonString.trim())) {
             return null;
         }
         String val = jsonMapper.getBykey(jsonString, key);

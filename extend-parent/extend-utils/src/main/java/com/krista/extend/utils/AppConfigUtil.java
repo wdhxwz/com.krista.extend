@@ -4,8 +4,9 @@ import java.io.InputStream;
 import java.util.Properties;
 
 /**
- * @Auther: dw_wanghonghong
- * @Description: 读取classpath:app.properties配置文件内容
+ * 读取classpath:app.properties配置文件内容
+ *
+ * @author: dw_wangdonghong
  */
 public class AppConfigUtil {
     private static Properties props;
@@ -22,8 +23,6 @@ public class AppConfigUtil {
         props = new Properties();
         try (InputStream in = AppConfigUtil.class.getClassLoader().getResourceAsStream("app.properties")) {
             props.load(in);
-        } catch (Exception ex) {
-            throw ex;
         }
     }
 
