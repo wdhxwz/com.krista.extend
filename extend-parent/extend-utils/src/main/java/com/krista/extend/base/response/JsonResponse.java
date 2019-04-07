@@ -8,8 +8,8 @@ package com.krista.extend.base.response;
  * @since 2018/12/15 14:11
  */
 public class JsonResponse<T> {
-    private static final Integer successCode = 200;
-    private static final String successMessage = "请求成功";
+    private static final Integer SUCCESS_CODE = 200;
+    private static final String SUCCESS_MESSAGE = "请求成功";
 
     private Integer code;
     private String message;
@@ -21,8 +21,8 @@ public class JsonResponse<T> {
 
     public JsonResponse(T data) {
         this.data = data;
-        this.code = successCode;
-        this.message = successMessage;
+        this.code = SUCCESS_CODE;
+        this.message = SUCCESS_MESSAGE;
     }
 
     public JsonResponse(Integer code, String message) {
@@ -31,7 +31,7 @@ public class JsonResponse<T> {
     }
 
     public static <R> JsonResponse success() {
-        return new JsonResponse<R>(successCode, successMessage);
+        return new JsonResponse<R>(SUCCESS_CODE, SUCCESS_MESSAGE);
     }
 
     public Integer getCode() {

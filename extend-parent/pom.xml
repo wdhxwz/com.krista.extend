@@ -11,6 +11,7 @@
         <module>extend-log4j</module>
         <module>extend-utils</module>
         <module>extend-poi</module>
+        <module>extend-mybatis</module>
     </modules>
     <packaging>pom</packaging>
     <properties>
