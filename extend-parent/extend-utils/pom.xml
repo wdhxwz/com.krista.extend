@@ -16,7 +16,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <commmon.langs.version>3.5</commmon.langs.version>
-        <commons.collections.version>3.2.1</commons.collections.version>
+        <commons.collections.version>3.2.2</commons.collections.version>
         <servlet.version>3.1.0</servlet.version>
         <guava.version>26.0-jre</guava.version>
         <hibernate.validator.version>5.3.6.Final</hibernate.validator.version>
