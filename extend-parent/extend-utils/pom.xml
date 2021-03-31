@@ -18,7 +18,7 @@
         <commmon.langs.version>3.5</commmon.langs.version>
         <commons.collections.version>3.2.1</commons.collections.version>
         <servlet.version>3.1.0</servlet.version>
-        <guava.version>26.0-jre</guava.version>
+        <guava.version>29.0-jre</guava.version>
         <hibernate.validator.version>5.3.6.Final</hibernate.validator.version>
         <slf4j.version>1.7.21</slf4j.version>
     </properties>
